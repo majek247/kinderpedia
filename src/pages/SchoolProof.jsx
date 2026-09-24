@@ -5,6 +5,7 @@ import {
   LockKeyhole,
   Users,
 } from 'lucide-react'
+import CaseStudy from './CaseStudy'
 
 const OFFICIAL = 'https://www.kinderpedia.co'
 
@@ -95,6 +96,8 @@ function SchoolStories() {
             </a>
           ))}
         </div>
+
+        <CaseStudy />
 
         <div className="kp-tools-strip">
           <div className="kp-tools-copy">

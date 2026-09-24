@@ -8,6 +8,7 @@ import {
   ArrowRight, ArrowUpRight, Menu, X, Globe, Box, Users,
 } from 'lucide-react'
 
+
 /*
  * KINDERPEDIA / HOMEPAGE
  * Composed of a small Hero + TrustStrip in this file, plus four
