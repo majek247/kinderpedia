@@ -4,8 +4,13 @@ import {
   ArrowRight, ArrowUpRight, Bell, BookOpen, Building2, CalendarDays,
   Check, CheckCircle2, CircleHelp, Clock3, CreditCard,
   GraduationCap, Heart, LayoutDashboard, LockKeyhole, Menu,
-  MessageCircle, Plus, ShieldCheck, Sparkles, Users, X,
+  MessageCircle, Plus, ShieldCheck, Sparkles, Users, X, Globe,
+  Box,
+  MapPin,
+  BarChart3,
+  ContactRound,
 } from 'lucide-react'
+
 
 /*
  * KINDERPEDIA / HOMEPAGE REDESIGN
@@ -21,6 +26,7 @@ import {
 const OFFICIAL = 'https://www.kinderpedia.co'
 const LOGO = `${OFFICIAL}/images/kp/logo_kp_mobile.svg`
 
+
 const FEATURES = [
   {
     id: 'attendance', label: 'Classroom', icon: GraduationCap,
@@ -31,17 +37,17 @@ const FEATURES = [
   },
   {
     id: 'messages', label: 'Families', icon: MessageCircle,
-    eyebrow: 'PARENT ENGAGEMENT', title: 'Keep families close to the school day.',
+    eyebrow: 'FAMILY COMMUNICATION', title: 'Keep families close to the school day.',
     text: 'Share the moments, messages and practical updates that parents need. Keep school communication organised around each child and class.',
     points: ['Class and individual communication', 'Photos, updates and school events', 'A familiar mobile experience'],
-    action: 'Explore parent engagement',
+    action: 'Explore family communication',
   },
   {
     id: 'tuition', label: 'Tuition', icon: CreditCard,
-    eyebrow: 'TUITION MANAGEMENT', title: 'A clearer picture of school finances.',
+    eyebrow: 'TUITION & PAYMENTS', title: 'A clearer picture of school finances.',
     text: 'Bring invoicing and payment tracking into the same platform as your school records. Help your finance team follow up with the right context.',
     points: ['Automated invoice generation', 'Payment tracking and reporting', 'Less disconnected financial admin'],
-    action: 'Explore tuition management',
+    action: 'Explore tuition & payments',
   },
   {
     id: 'progress', label: 'Progress', icon: BookOpen,
@@ -51,6 +57,8 @@ const FEATURES = [
     action: 'Explore progress monitoring',
   },
 ]
+
+
 
 const PEOPLE = [
   { name: 'Amelia Parker', initials: 'AP', tone: 'rose', status: 'Present' },
@@ -88,6 +96,7 @@ const ROLES = [
     tasks: ['Read today’s classroom update', 'Check the upcoming school event', 'Catch up on learning progress'],
   },
 ]
+
 
 const EXTRA_MODULES = [
   { icon: CalendarDays, title: 'Timetables', text: 'Keep classes and schedules organised.' },
@@ -241,60 +250,475 @@ function ProductPreview() {
 }
 
 function Hero({ demoTo }) {
-  return <section className="kp-hero" aria-labelledby="kp-hero-title">
-    <div className="kp-hero-glow" aria-hidden="true" />
-    <div className="kp-container kp-hero-grid">
-      <div className="kp-hero-copy">
-        <span className="kp-eyebrow"><span className="kp-eyebrow-dot" />A MORE CONNECTED SCHOOL DAY</span>
-        <h1 id="kp-hero-title">Less admin.<br />Closer connections.<br /><span>More room to teach.</span></h1>
-        <p className="kp-hero-description">Bring school management, classroom activity and family communication together. One platform for the people who make your school work.</p>
-        <div className="kp-actions"><Action to={demoTo} /><a className="kp-text-button" href="#kp-platform">Explore the platform <ArrowRight size={17} /></a></div>
-        <div className="kp-hero-checks"><span><Check size={15} />Schools & nurseries</span><span><Check size={15} />Web & mobile</span></div>
-        <div className="kp-hero-proof"><div className="kp-rating-stars" aria-label="Rated 4.9 out of 5">★★★★★</div><div><strong>4.9 / 5</strong><span>Reported by Kinderpedia across GetApp, Capterra & G2</span></div></div>
+  return (
+    <section
+      className="kp-hero kp-hero-refresh"
+      aria-labelledby="kp-hero-title"
+    >
+      <div className="kp-hero-ribbon" aria-hidden="true" />
+
+      <div className="kp-container kp-hero-grid">
+        <div className="kp-hero-copy">
+          <span className="kp-eyebrow">
+            CONNECTED SCHOOL MANAGEMENT
+          </span>
+
+          <h1 id="kp-hero-title">
+            A better school day.
+            <br />
+            <span>For everyone.</span>
+          </h1>
+
+          <p className="kp-hero-description">
+            Bring school operations, learning and family communication
+            together in one intuitive platform.
+          </p>
+
+          <div className="kp-actions">
+            <Action to={demoTo}>Book a free demo</Action>
+
+            <a
+              className="kp-button kp-button-secondary"
+              href="#kp-platform"
+            >
+              Explore the platform
+              <ArrowRight size={17} aria-hidden="true" />
+            </a>
+          </div>
+
+          <p className="kp-hero-audience">
+            For schools, preschools and education groups.
+          </p>
+        </div>
+
+        <div className="kp-hero-artwork">
+          <img
+            src="/images/kinderpediaheroimage.png"
+            alt="Kinderpedia school dashboard alongside the parent mobile app."
+            className="kp-hero-image"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+          />
+        </div>
       </div>
-      <ProductPreview />
+    </section>
+  )
+}
+
+
+
+const KP_CARD_ASSETS = {
+  mapleBear: '/images/maple-bear-logo.png',
+  cambridge: '/images/cambridge-school-logo.png',
+  helikon: '/images/helikon-logo.png',
+  just4kids: '/images/just4kids-logo.png',
+  emma: '/images/student-emma.png',
+  lucas: '/images/student-lucas.png',
+  sofia: '/images/student-sofia.png',
+  teacher: '/images/teacher-avatar.png',
+  classroom: '/images/classroom-activity.png',
+}
+
+function SchoolLogo({ src, name }) {
+  const [failed, setFailed] = useState(false)
+
+  return (
+    <div className="kp-connected-school">
+      {failed ? (
+        <strong>{name}</strong>
+      ) : (
+        <img
+          src={src}
+          alt={name}
+          loading="lazy"
+          onError={() => setFailed(true)}
+        />
+      )}
     </div>
-  </section>
+  )
+}
+
+function CardAvatar({ src, name, large = false }) {
+  const [failed, setFailed] = useState(false)
+
+  return (
+    <span
+      className={`kp-connected-avatar${large ? ' is-large' : ''}`}
+      aria-label={name}
+      role="img"
+    >
+      {failed ? (
+        name.split(' ').map(word => word[0]).slice(0, 2).join('')
+      ) : (
+        <img
+          src={src}
+          alt=""
+          loading="lazy"
+          onError={() => setFailed(true)}
+        />
+      )}
+    </span>
+  )
 }
 
 function TrustStrip() {
-  return <section className="kp-trust" aria-label="Kinderpedia community">
-    <div className="kp-container kp-trust-grid"><div className="kp-trust-intro"><span className="kp-eyebrow">A GLOBAL SCHOOL COMMUNITY</span><h2>Different schools.<br />Shared priorities.</h2></div>
-      <div className="kp-trust-stat"><strong>2,000+</strong><span>customers worldwide</span></div>
-      <div className="kp-trust-stat"><strong>40+</strong><span>countries represented</span></div>
-      <div className="kp-trust-note"><Users size={25} /><p>Helping school teams and families stay connected.</p></div>
-    </div>
-  </section>
+  return (
+    <section
+      className="kp-connected-trust"
+      aria-label="Kinderpedia customers and community"
+    >
+      <div className="kp-container kp-connected-trust-inner">
+        <div className="kp-connected-stat">
+          <Users aria-hidden="true" />
+          <div>
+            <strong>2,000+</strong>
+            <span>customers</span>
+          </div>
+        </div>
+
+        <div className="kp-connected-stat is-blue">
+          <Globe aria-hidden="true" />
+          <div>
+            <strong>40+</strong>
+            <span>countries</span>
+          </div>
+        </div>
+
+        <div className="kp-connected-stat is-blue">
+          <Box aria-hidden="true" />
+          <div>
+            <strong>27+</strong>
+            <span>modules</span>
+          </div>
+        </div>
+
+        <SchoolLogo
+          src={KP_CARD_ASSETS.mapleBear}
+          name="Maple Bear"
+        />
+        <SchoolLogo
+          src={KP_CARD_ASSETS.cambridge}
+          name="Cambridge School of Constanța"
+        />
+        <SchoolLogo
+          src={KP_CARD_ASSETS.helikon}
+          name="Helikon"
+        />
+        <SchoolLogo
+          src={KP_CARD_ASSETS.just4kids}
+          name="Just4Kids"
+        />
+      </div>
+    </section>
+  )
+}
+
+function ConnectedCard({
+  title,
+  description,
+  icon: Icon,
+  tone = 'pink',
+  tinted = false,
+  demoTo,
+  children,
+}) {
+  return (
+    <article
+      className={`kp-connected-card is-${tone}${tinted ? ' is-tinted' : ''}`}
+    >
+      <div className="kp-connected-card-head">
+        <span className="kp-connected-icon">
+          <Icon size={25} strokeWidth={1.65} aria-hidden="true" />
+        </span>
+
+        <div className="kp-connected-card-copy">
+          <h3>{title}</h3>
+          <p>{description}</p>
+        </div>
+
+        <Action
+          to={demoTo}
+          className="kp-connected-card-link"
+        >
+          <span className="kp-connected-sr">
+            Explore {title.toLowerCase()}
+          </span>
+        </Action>
+      </div>
+
+      <div
+        className="kp-connected-preview"
+        role="img"
+        aria-label={`${title}: illustrative interface with sample data`}
+      >
+        {children}
+      </div>
+    </article>
+  )
 }
 
 function Platform({ demoTo }) {
-  const [active, setActive] = useState(0)
-  const id = useId()
-  const buttons = useRef([])
-  const feature = FEATURES[active]
-  const selectByKey = e => {
-    let next = active
-    if (e.key === 'ArrowRight') next = (active + 1) % FEATURES.length
-    else if (e.key === 'ArrowLeft') next = (active + FEATURES.length - 1) % FEATURES.length
-    else if (e.key === 'Home') next = 0
-    else if (e.key === 'End') next = FEATURES.length - 1
-    else return
-    e.preventDefault(); setActive(next); buttons.current[next]?.focus()
-  }
-  return <section className="kp-section kp-platform" id="kp-platform" aria-labelledby="kp-platform-title">
-    <div className="kp-container">
-      <div className="kp-section-heading"><div><span className="kp-eyebrow">ONE PLATFORM. THE WHOLE SCHOOL.</span><h2 id="kp-platform-title">Everything connects.<br /><span>Everyone benefits.</span></h2></div><p>From the first register to the last parent update, give your team a simpler way to get through the day.</p></div>
-      <div className="kp-feature-tabs" role="tablist" aria-label="Explore platform features" onKeyDown={selectByKey}>
-        {FEATURES.map(({ id: featureId, label, icon: Icon }, index) => <button key={featureId} type="button" role="tab" id={`${id}-tab-${index}`} aria-controls={`${id}-panel`} aria-selected={active === index} tabIndex={active === index ? 0 : -1} ref={el => { buttons.current[index] = el }} onClick={() => setActive(index)} className={active === index ? 'is-active' : ''}><Icon size={18} />{label}<ArrowUpRight size={16} /></button>)}
+  const students = [
+    {
+      name: 'Emma Popescu',
+      year: 'Year 2',
+      image: KP_CARD_ASSETS.emma,
+    },
+    {
+      name: 'Lucas Martin',
+      year: 'Year 1',
+      image: KP_CARD_ASSETS.lucas,
+    },
+    {
+      name: 'Sofia Ionescu',
+      year: 'Reception',
+      image: KP_CARD_ASSETS.sofia,
+    },
+  ]
+
+  const campuses = [
+    ['Main Campus', '482 students', 'Online'],
+    ['Riverside Campus', '320 students', 'Online'],
+    ['City Campus', '210 students', 'Attention'],
+    ['West Campus', '180 students', 'Online'],
+  ]
+
+  return (
+    <section
+      className="kp-connected-platform"
+      id="kp-platform"
+      aria-labelledby="kp-platform-title"
+    >
+      <div className="kp-container">
+        <div className="kp-connected-heading">
+          <h2 id="kp-platform-title">
+            Every part of your school. <span>Connected.</span>
+          </h2>
+          <p>
+            One shared platform for school operations, learning and
+            family communication.
+          </p>
+        </div>
+
+        <div className="kp-connected-grid">
+          <ConnectedCard
+            title="School administration"
+            description="Keep student records, enrolments and daily operations in one place."
+            icon={ContactRound}
+            tone="teal"
+            demoTo={demoTo}
+          >
+            <div className="kp-connected-student-tabs">
+              <span className="is-selected">Students</span>
+              <span>Enrolments</span>
+              <span>Staff</span>
+            </div>
+
+            <div className="kp-connected-students">
+              {students.map(student => (
+                <div
+                  className="kp-connected-student"
+                  key={student.name}
+                >
+                  <CardAvatar
+                    src={student.image}
+                    name={student.name}
+                  />
+                  <span className="kp-connected-student-name">
+                    {student.name}
+                  </span>
+                  <span className="kp-connected-year">
+                    {student.year}
+                  </span>
+                  <span className="kp-connected-badge">
+                    Active
+                  </span>
+                </div>
+              ))}
+            </div>
+          </ConnectedCard>
+
+          <ConnectedCard
+            title="Classroom management"
+            description="Plan lessons, track attendance and keep learning on track."
+            icon={CalendarDays}
+            tinted
+            demoTo={demoTo}
+          >
+            <div className="kp-connected-timetable">
+              <div className="kp-connected-timetable-row is-days">
+                <span />
+                <span>Mon 12</span>
+                <span>Tue 13</span>
+                <span>Wed 14</span>
+              </div>
+
+              <div className="kp-connected-timetable-row">
+                <span className="kp-connected-time">08:30</span>
+                <div><strong>English</strong><span>Year 2</span></div>
+                <div><strong>Mathematics</strong><span>Year 4</span></div>
+                <div><strong>Science</strong><span>Year 5</span></div>
+              </div>
+
+              <div className="kp-connected-timetable-row">
+                <span className="kp-connected-time">10:00</span>
+                <div><strong>Art</strong><span>Year 1</span></div>
+                <div><strong>PE</strong><span>Year 3</span></div>
+                <div><strong>English</strong><span>Year 2</span></div>
+              </div>
+            </div>
+          </ConnectedCard>
+
+          <ConnectedCard
+            title="Family communication"
+            description="Share updates, messages and moments with families."
+            icon={MessageCircle}
+            demoTo={demoTo}
+          >
+            <div className="kp-connected-message">
+              <CardAvatar
+                src={KP_CARD_ASSETS.teacher}
+                name="Emma Wilson"
+              />
+
+              <div className="kp-connected-message-body">
+                <div className="kp-connected-bubble">
+                  <p>
+                    Today’s class was amazing! The children loved
+                    the science experiment. <span>♥</span>
+                  </p>
+                  <time>10:24</time>
+                </div>
+
+                <div className="kp-connected-gallery">
+                  <div
+                    className="kp-connected-photo"
+                    style={{
+                      backgroundImage:
+                        `url("${KP_CARD_ASSETS.classroom}")`,
+                    }}
+                  />
+                  <div
+                    className="kp-connected-photo is-more"
+                    style={{
+                      backgroundImage:
+                        `url("${KP_CARD_ASSETS.classroom}")`,
+                    }}
+                  >
+                    <span>+3</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ConnectedCard>
+
+          <ConnectedCard
+            title="Tuition & payments"
+            description="Automate invoicing, payments and financial reporting."
+            icon={CreditCard}
+            demoTo={demoTo}
+          >
+            <div className="kp-connected-invoice">
+              <div className="kp-connected-invoice-heading">
+                <strong>Invoice #INV-2027-089</strong>
+                <span className="kp-connected-badge">
+                  <i /> Paid
+                </span>
+              </div>
+
+              <div className="kp-connected-invoice-line">
+                <span>After school program</span>
+                <span>€120.00</span>
+              </div>
+
+              <div className="kp-connected-invoice-line">
+                <span>April tuition</span>
+                <span>€420.00</span>
+              </div>
+
+              <div className="kp-connected-invoice-line is-total">
+                <strong>Total</strong>
+                <strong>€540.00</strong>
+              </div>
+            </div>
+          </ConnectedCard>
+
+          <ConnectedCard
+            title="Progress monitoring"
+            description="Track learning, milestones and development."
+            icon={BarChart3}
+            tone="blue"
+            demoTo={demoTo}
+          >
+            <div className="kp-connected-progress">
+              <CardAvatar
+                src={KP_CARD_ASSETS.emma}
+                name="Emma Popescu"
+                large
+              />
+
+              <div className="kp-connected-progress-body">
+                <strong className="kp-connected-progress-name">
+                  Emma Popescu
+                </strong>
+                <span className="kp-connected-progress-year">
+                  Year 2
+                </span>
+
+                {[
+                  ['Reading', 'On track'],
+                  ['Mathematics', 'On track'],
+                  ['Social skills', 'Excellent'],
+                  ['Creativity', 'On track'],
+                ].map(([skill, status]) => (
+                  <div className="kp-connected-skill" key={skill}>
+                    <span className="kp-connected-skill-dot">
+                      <span />
+                    </span>
+                    <span>{skill}</span>
+                    <span
+                      className={`kp-connected-badge${
+                        status === 'Excellent' ? ' is-excellent' : ''
+                      }`}
+                    >
+                      {status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </ConnectedCard>
+
+          <ConnectedCard
+            title="Multi-campus oversight"
+            description="Manage multiple campuses with a clear, real-time view."
+            icon={MapPin}
+            demoTo={demoTo}
+          >
+            <div className="kp-connected-campuses">
+              {campuses.map(([name, count, status]) => (
+                <div className="kp-connected-campus" key={name}>
+                  <span>{name}</span>
+                  <span>{count}</span>
+                  <span
+                    className={`kp-connected-badge${
+                      status === 'Attention' ? ' is-attention' : ''
+                    }`}
+                  >
+                    <i /> {status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </ConnectedCard>
+        </div>
       </div>
-      <div className="kp-feature-panel" role="tabpanel" id={`${id}-panel`} aria-labelledby={`${id}-tab-${active}`} tabIndex={0}>
-        <div className="kp-feature-copy"><span className="kp-eyebrow">{feature.eyebrow}</span><h3>{feature.title}</h3><p>{feature.text}</p><ul className="kp-check-list">{feature.points.map(point => <li key={point}><CheckCircle2 size={17} />{point}</li>)}</ul><Action to={demoTo} secondary>{feature.action}</Action></div>
-        <div className={`kp-feature-visual kp-feature-${feature.id}`}><div className="kp-feature-screen"><PreviewContent active={feature.id} /><p className="kp-sample-label">Illustrative interface · sample data</p></div><span className="kp-visual-decoration" aria-hidden="true">✳</span></div>
-      </div>
-      <div className="kp-module-grid">{EXTRA_MODULES.map(({ icon, title, text }) => <a className="kp-module-card" href={OFFICIAL + '/en'} key={title}><IconTile icon={icon} tone="neutral" /><h3>{title}</h3><p>{text}</p><span>Explore Kinderpedia <ArrowUpRight size={14} /></span></a>)}</div>
-    </div>
-  </section>
+    </section>
+  )
 }
+
+
 
 function Community({ demoTo }) {
   const [active, setActive] = useState(0)
@@ -511,40 +935,44 @@ const styles = `
 .kp-home .kp-trust-note { display: flex; gap: 15px; border-left: 1px solid var(--kp-line); padding-left: 28px; align-items: center; }
 .kp-home .kp-trust-note svg { color: var(--kp-berry); }
 .kp-home .kp-trust-note p { color: var(--kp-muted); font-size: 12px; line-height: 1.7; }
+
 /* Interactive feature explorer */
 .kp-home .kp-section-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 45px; margin-bottom: 38px; }
-.kp-home .kp-section-heading h2 { margin-top: 13px; }
-.kp-home .kp-section-heading > p { max-width: 345px; color: var(--kp-muted); font-size: 14px; line-height: 1.8; }
-.kp-home .kp-feature-tabs { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; padding: 7px; border: 1px solid var(--kp-line); background: #f8f8fb; border-radius: 13px; margin-bottom: 18px; }
-.kp-home .kp-feature-tabs button { border: 1px solid transparent; background: transparent; display: flex; align-items: center; gap: 10px; padding: 15px 19px; font-size: 13px; font-weight: 600; border-radius: 8px; transition: background .2s,color .2s; }
+.kp-home .kp-section-heading h2 { margin-top: 13px; font-size: clamp(32px, 3.5vw, 46px); line-height: 1.15; font-weight: 650; letter-spacing: -.045em; }
+.kp-home .kp-section-heading h2 > span { color: var(--kp-muted); }
+.kp-home .kp-section-heading > p { max-width: 380px; color: var(--kp-muted); font-size: 15px; line-height: 1.8; }
+.kp-home .kp-feature-tabs { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; padding: 8px; border: 1px solid var(--kp-line); background: #f8f8fb; border-radius: 14px; margin-bottom: 24px; }
+.kp-home .kp-feature-tabs button { border: 1px solid transparent; background: transparent; display: flex; align-items: center; gap: 12px; padding: 16px 22px; font-size: 14px; font-weight: 600; border-radius: 10px; transition: background .2s,color .2s; }
 .kp-home .kp-feature-tabs button > svg:last-child { margin-left: auto; opacity: .5; }
-.kp-home .kp-feature-tabs button.is-active { background: white; border-color: #e7d9e0; box-shadow: 0 2px 5px #35254309; color: var(--kp-berry); }
+.kp-home .kp-feature-tabs button.is-active { background: white; border-color: #e7d9e0; box-shadow: 0 4px 10px #3525430f; color: var(--kp-berry); }
 .kp-home .kp-feature-tabs button:hover { color: var(--kp-berry); background: #fff; }
-.kp-home .kp-feature-panel { border: 1px solid #e8e5ed; border-radius: 18px; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; min-height: 465px; }
-.kp-home .kp-feature-copy { padding: 50px; align-self: center; }
-.kp-home .kp-feature-copy h3, .kp-home .kp-role-copy h3 { font-size: clamp(25px,2.6vw,34px); letter-spacing: -1px; font-weight: 620; line-height: 1.22; margin: 17px 0; }
-.kp-home .kp-feature-copy > p, .kp-home .kp-role-copy > p { font-size: 13px; line-height: 1.85; color: var(--kp-muted); }
-.kp-home .kp-check-list { list-style: none; padding: 0; display: grid; gap: 12px; margin: 23px 0 29px; }
-.kp-home .kp-check-list li { display: flex; align-items: center; gap: 9px; font-size: 12px; }
+.kp-home .kp-feature-panel { border: 1px solid #e8e5ed; border-radius: 18px; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; min-height: 520px; }
+.kp-home .kp-feature-copy { padding: 60px 55px; align-self: center; }
+.kp-home .kp-feature-copy h3, .kp-home .kp-role-copy h3 { font-size: clamp(28px, 3vw, 38px); letter-spacing: -1.2px; font-weight: 620; line-height: 1.2; margin: 18px 0; }
+.kp-home .kp-feature-copy > p, .kp-home .kp-role-copy > p { font-size: 14px; line-height: 1.85; color: var(--kp-muted); }
+.kp-home .kp-check-list { list-style: none; padding: 0; display: grid; gap: 14px; margin: 28px 0 34px; }
+.kp-home .kp-check-list li { display: flex; align-items: center; gap: 10px; font-size: 13px; }
 .kp-home .kp-check-list svg { color: var(--kp-berry); }
-.kp-home .kp-feature-visual { position: relative; background: #f7f0f5; background-image: radial-gradient(#bea5b12e .8px,transparent .8px); background-size: 12px 12px; display: grid; align-items: center; padding: 43px; overflow: hidden; }
+.kp-home .kp-feature-visual { position: relative; background: #f7f0f5; background-image: radial-gradient(#bea5b12e .8px,transparent .8px); background-size: 12px 12px; display: grid; align-items: center; padding: 50px; overflow: hidden; }
 .kp-home .kp-feature-tuition { background-color: #eff6f1; }
 .kp-home .kp-feature-progress { background-color: #f0eef9; }
-.kp-home .kp-feature-screen { background: white; border-radius: 12px; border: 1px solid #e7dee9; box-shadow: var(--kp-shadow); padding: 23px; position: relative; z-index: 1; width: 100%; }
-.kp-home .kp-feature-screen .kp-preview-heading h4 { font-size: 15px; }
-.kp-home .kp-feature-screen .kp-person strong { font-size: 11px; }
-.kp-home .kp-feature-screen .kp-student-row { padding-block: 12px; }
-.kp-home .kp-feature-screen .kp-avatar { width: 34px; height: 34px; }
-.kp-home .kp-visual-decoration { position: absolute; right: -20px; bottom: -43px; font-size: 180px; line-height: 1; color: #b9336015; transform: rotate(15deg); }
-.kp-home .kp-register-note { display: flex; align-items: center; gap: 6px; padding: 10px 0 16px; color: #838293; font-size: 9px; }
-.kp-home .kp-auto-save { margin-left: auto; color: #528164; font-size: 8px; }
-.kp-home .kp-module-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 15px; margin-top: 23px; }
-.kp-home .kp-module-card { padding: 25px; border: 1px solid var(--kp-line); border-radius: 12px; transition: border-color .2s,transform .2s,box-shadow .2s; }
+.kp-home .kp-feature-screen { background: white; border-radius: 14px; border: 1px solid #e7dee9; box-shadow: var(--kp-shadow); padding: 28px; position: relative; z-index: 1; width: 100%; }
+.kp-home .kp-feature-screen .kp-preview-heading h4 { font-size: 16px; }
+.kp-home .kp-feature-screen .kp-person strong { font-size: 12px; }
+.kp-home .kp-feature-screen .kp-student-row { padding-block: 14px; }
+.kp-home .kp-feature-screen .kp-avatar { width: 36px; height: 36px; }
+.kp-home .kp-visual-decoration { position: absolute; right: -20px; bottom: -43px; font-size: 200px; line-height: 1; color: #b9336015; transform: rotate(15deg); }
+.kp-home .kp-register-note { display: flex; align-items: center; gap: 8px; padding: 12px 0 18px; color: #838293; font-size: 10px; }
+.kp-home .kp-auto-save { margin-left: auto; color: #528164; font-size: 9px; }
+.kp-home .kp-module-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-top: 28px; }
+.kp-home .kp-module-card { padding: 28px; border: 1px solid var(--kp-line); border-radius: 14px; transition: border-color .2s,transform .2s,box-shadow .2s; }
 .kp-home .kp-module-card:hover { transform: translateY(-4px); border-color: #dfb8c6; box-shadow: 0 12px 22px -15px #74496038; }
-.kp-home .kp-module-card .kp-icon { width: 38px; height: 38px; border-radius: 10px; }
-.kp-home .kp-module-card h3 { margin: 18px 0 7px; font-size: 14px; font-weight: 650; }
-.kp-home .kp-module-card p { color: var(--kp-muted); font-size: 12px; line-height: 1.75; }
-.kp-home .kp-module-card > span:last-child { display: flex; gap: 6px; align-items: center; font-size: 10px; font-weight: 600; color: var(--kp-berry); margin-top: 20px; }
+.kp-home .kp-module-card .kp-icon { width: 42px; height: 42px; border-radius: 12px; }
+.kp-home .kp-module-card h3 { margin: 20px 0 8px; font-size: 15px; font-weight: 650; }
+.kp-home .kp-module-card p { color: var(--kp-muted); font-size: 13px; line-height: 1.75; }
+.kp-home .kp-module-card > span:last-child { display: flex; gap: 6px; align-items: center; font-size: 11px; font-weight: 600; color: var(--kp-berry); margin-top: 22px; }
+
+
 /* Alternate product screens */
 .kp-home .kp-post { border: 1px solid #efebf2; border-radius: 8px; padding: 12px; }
 .kp-home .kp-art { position: relative; overflow: hidden; height: 118px; border-radius: 7px; background: #eee7f7; margin: 12px 0; }
@@ -819,6 +1247,1123 @@ const styles = `
   .kp-home .kp-footer-inner { align-items: flex-start; flex-direction: column; gap: 22px; }
   .kp-home .kp-footer nav { gap: 14px 20px; }
 }
+/* Updated image-led hero */
+.kp-home .kp-hero.kp-hero-refresh {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 64px 0 52px;
+  background:
+    radial-gradient(
+      ellipse at 76% 38%,
+      rgba(124, 215, 202, 0.22),
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse at 5% 10%,
+      rgba(255, 255, 255, 0.98),
+      transparent 52%
+    ),
+    linear-gradient(118deg, #effaf8 0%, #f8fdfc 46%, #e4f5f1 100%);
+}
+
+.kp-home .kp-hero-refresh::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.3;
+  background-image: radial-gradient(
+    rgba(32, 127, 120, 0.16) 0.6px,
+    transparent 0.6px
+  );
+  background-size: 7px 7px;
+  mask-image: linear-gradient(to bottom, #000, transparent 90%);
+}
+
+.kp-home .kp-hero-refresh::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  width: 115%;
+  height: 380px;
+  left: -24%;
+  bottom: -300px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  transform: rotate(8deg);
+  background: rgba(255, 255, 255, 0.24);
+  box-shadow:
+    0 -20px 0 rgba(255, 255, 255, 0.2),
+    0 -42px 0 rgba(120, 196, 184, 0.07),
+    0 -65px 0 rgba(255, 255, 255, 0.17);
+  pointer-events: none;
+}
+
+.kp-home .kp-hero-refresh .kp-hero-ribbon {
+  position: absolute;
+  z-index: 0;
+  width: 1000px;
+  height: 370px;
+  top: -270px;
+  right: -280px;
+  border: 26px solid rgba(255, 255, 255, 0.34);
+  border-radius: 50%;
+  transform: rotate(-22deg);
+  box-shadow:
+    0 16px 32px rgba(31, 133, 119, 0.04),
+    inset 0 -10px 22px rgba(31, 133, 119, 0.04);
+  pointer-events: none;
+}
+
+.kp-home .kp-hero-refresh .kp-hero-grid {
+  position: relative;
+  z-index: 1;
+  width: min(1200px, calc(100% - 80px));
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.32fr);
+  align-items: stretch;
+  gap: 24px;
+}
+
+.kp-home .kp-hero-refresh .kp-hero-copy {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  max-width: 560px;
+  padding-block: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: center;
+}
+
+.kp-home .kp-hero-refresh .kp-eyebrow {
+  color: #218f8a;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  line-height: 1.6;
+}
+
+.kp-home .kp-hero-refresh h1 {
+  margin: 20px 0 24px;
+  color: #10223c;
+  font-size: clamp(36px, 3.65vw, 57px);
+  font-weight: 750;
+  line-height: 1.09;
+  letter-spacing: -0.055em;
+}
+
+.kp-home .kp-hero-refresh h1 > span {
+  color: #119c92;
+}
+
+.kp-home .kp-hero-refresh .kp-hero-description {
+  max-width: 425px;
+  color: #526578;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.kp-home .kp-hero-refresh .kp-actions {
+  gap: 12px;
+  margin-top: 27px;
+}
+
+.kp-home .kp-hero-refresh .kp-button {
+  min-height: 48px;
+  padding: 13px 19px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  gap: 10px;
+}
+
+.kp-home .kp-hero-refresh .kp-button-primary {
+  color: #fff;
+  border-color: #159e98;
+  background: linear-gradient(135deg, #23aaa5, #09978f);
+  box-shadow:
+    0 7px 16px rgba(15, 150, 142, 0.19),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.kp-home .kp-hero-refresh .kp-button-primary:hover {
+  background: linear-gradient(135deg, #199c96, #07857e);
+  transform: translateY(-2px);
+}
+
+.kp-home .kp-hero-refresh .kp-button-secondary {
+  color: #172a40;
+  border-color: rgba(217, 231, 228, 0.95);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow:
+    0 5px 12px rgba(36, 78, 72, 0.07),
+    inset 0 1px 0 #fff;
+}
+
+.kp-home .kp-hero-refresh .kp-button-secondary:hover {
+  color: #087f78;
+  border-color: #a8d9d1;
+  background: #fff;
+}
+
+.kp-home .kp-hero-refresh .kp-hero-audience {
+  margin-top: 17px;
+  color: #677c86;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.kp-home .kp-hero-refresh .kp-hero-artwork {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+}
+
+.kp-home .kp-hero-refresh .kp-hero-image {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  min-height: 480px;
+  object-fit: contain;
+  object-position: right center;
+  align-self: stretch;
+}
+
+/* Tablet */
+@media (max-width: 1100px) {
+  .kp-home .kp-hero.kp-hero-refresh {
+    padding: 48px 0;
+  }
+
+.kp-home .kp-hero-refresh .kp-hero-grid {
+  width: min(1200px, calc(100% - 48px));
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 20px;
+}
+
+  .kp-home .kp-hero-refresh h1 {
+    font-size: clamp(34px, 4vw, 44px);
+  }
+
+  .kp-home .kp-hero-refresh .kp-hero-description {
+    font-size: 15px;
+  }
+}
+
+/* Stacked layout */
+@media (max-width: 850px) {
+  .kp-home .kp-hero.kp-hero-refresh {
+    padding: 48px 0 30px;
+  }
+
+  .kp-home .kp-hero-refresh .kp-hero-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .kp-home .kp-hero-refresh .kp-hero-copy {
+    max-width: 620px;
+    padding: 0;
+  }
+
+  .kp-home .kp-hero-refresh h1 {
+    font-size: clamp(39px, 6.6vw, 56px);
+  }
+
+  .kp-home .kp-hero-refresh .kp-hero-description {
+    max-width: 470px;
+    font-size: 16px;
+  }
+
+  .kp-home .kp-hero-refresh .kp-hero-artwork {
+    max-width: 720px;
+    margin-inline: auto;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .kp-home .kp-hero.kp-hero-refresh {
+    padding: 38px 0 24px;
+  }
+
+.kp-home .kp-hero-refresh .kp-hero-grid {
+  width: min(1200px, calc(100% - 36px));
+  gap: 24px;
+}
+  .kp-home .kp-hero-refresh .kp-eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+  }
+
+  .kp-home .kp-hero-refresh h1 {
+    margin: 17px 0 20px;
+    font-size: clamp(30px, 8.5vw, 48px);
+    line-height: 1.12;
+  }
+
+  .kp-home .kp-hero-refresh .kp-hero-description {
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  .kp-home .kp-hero-refresh .kp-actions {
+    margin-top: 23px;
+    gap: 10px;
+  }
+
+  .kp-home .kp-hero-refresh .kp-button {
+    padding: 12px 15px;
+    font-size: 11px;
+  }
+
+  .kp-home .kp-hero-refresh .kp-hero-audience {
+    font-size: 10px;
+    margin-top: 15px;
+  }
+}
+
+/* Connected platform: stats strip and six preview cards */
+.kp-home .kp-connected-trust,
+.kp-home .kp-connected-platform {
+  --connected-ink: #10213d;
+  --connected-muted: #52677d;
+  --connected-teal: #009e95;
+  --connected-pink: #ff438f;
+  --connected-blue: #0793be;
+  color: var(--connected-ink);
+}
+
+.kp-home .kp-connected-trust {
+  padding: 27px 0 24px;
+  background: linear-gradient(180deg, #f8fdfc 0%, #fff 100%);
+}
+
+.kp-home .kp-connected-trust-inner {
+  display: grid;
+  grid-template-columns: 1.2fr 1.15fr 1.15fr .85fr 1fr .8fr .8fr;
+  align-items: center;
+}
+
+.kp-home .kp-connected-trust-inner > * {
+  min-width: 0;
+  min-height: 58px;
+}
+
+.kp-home .kp-connected-trust-inner > * + * {
+  border-left: 1px solid #d9e3e9;
+}
+
+.kp-home .kp-connected-stat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 0 15px;
+}
+
+.kp-home .kp-connected-stat > svg {
+  width: 35px;
+  height: 35px;
+  flex-shrink: 0;
+  stroke-width: 1.6;
+  color: #12b87b;
+}
+
+.kp-home .kp-connected-stat.is-blue > svg {
+  color: #058fbb;
+}
+
+.kp-home .kp-connected-stat strong {
+  display: block;
+  color: var(--connected-ink);
+  font-size: 23px;
+  font-weight: 750;
+  letter-spacing: -.7px;
+  line-height: 1.2;
+}
+
+.kp-home .kp-connected-stat div > span {
+  display: block;
+  color: var(--connected-muted);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.kp-home .kp-connected-school {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 17px;
+  text-align: center;
+}
+
+.kp-home .kp-connected-school img {
+  display: block;
+  width: 100%;
+  max-width: 116px;
+  height: 57px;
+  object-fit: contain;
+}
+
+.kp-home .kp-connected-school > strong {
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--connected-ink);
+}
+
+.kp-home .kp-connected-platform {
+  padding: 27px 0 38px;
+  scroll-margin-top: 100px;
+  background:
+    radial-gradient(
+      ellipse at 48% 100%,
+      rgba(227, 248, 245, .38),
+      transparent 65%
+    ),
+    #fff;
+}
+
+.kp-home .kp-connected-heading {
+  margin-bottom: 27px;
+}
+
+.kp-home .kp-connected-heading h2 {
+  color: var(--connected-ink);
+  font-size: clamp(26px, 2.65vw, 37px);
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -1.15px;
+}
+
+.kp-home .kp-connected-heading h2 > span {
+  color: #078b8b;
+}
+
+.kp-home .kp-connected-heading > p {
+  margin-top: 10px;
+  color: var(--connected-muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.kp-home .kp-connected-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.kp-home .kp-connected-card {
+  --card-accent: var(--connected-pink);
+  --card-icon-bg: #fff0f6;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 19px 15px 15px;
+  border: 1px solid #e5efef;
+  border-radius: 15px;
+  background: linear-gradient(145deg, #fff, #fcfefe);
+  box-shadow:
+    0 2px 5px rgba(25, 79, 80, .018),
+    inset 0 1px 0 #fff;
+}
+
+.kp-home .kp-connected-card.is-teal {
+  --card-accent: var(--connected-teal);
+  --card-icon-bg: #e6f8f4;
+}
+
+.kp-home .kp-connected-card.is-blue {
+  --card-accent: var(--connected-blue);
+  --card-icon-bg: #e9f6fc;
+}
+
+.kp-home .kp-connected-card.is-tinted {
+  background:
+    radial-gradient(
+      ellipse at 80% 20%,
+      rgba(255, 255, 255, .75),
+      transparent 65%
+    ),
+    linear-gradient(135deg, #eaf8f5, #f0fbfa);
+}
+
+.kp-home .kp-connected-card-head {
+  display: grid;
+  grid-template-columns: 43px minmax(0, 1fr) 25px;
+  align-items: start;
+  gap: 10px;
+}
+
+.kp-home .kp-connected-icon {
+  display: grid;
+  place-items: center;
+  width: 43px;
+  height: 43px;
+  border-radius: 12px;
+  color: var(--card-accent);
+  background: var(--card-icon-bg);
+}
+
+.kp-home .kp-connected-card-copy h3 {
+  margin: 6px 0 8px;
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: 750;
+  letter-spacing: -.35px;
+  color: var(--connected-ink);
+}
+
+.kp-home .kp-connected-card-copy p {
+  margin: 0;
+  color: var(--connected-muted);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.kp-home .kp-connected-card .kp-connected-card-link {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 28px;
+  min-height: 38px;
+  padding: 0;
+  margin: 0;
+  gap: 0;
+  border: 0;
+  background: transparent;
+  color: var(--card-accent);
+  box-shadow: none;
+  border-radius: 7px;
+}
+
+.kp-home .kp-connected-card .kp-connected-card-link:hover {
+  background: var(--card-icon-bg);
+  transform: translateX(2px);
+}
+
+.kp-home .kp-connected-card .kp-connected-card-link:focus-visible {
+  outline: 2px solid var(--card-accent);
+  outline-offset: 3px;
+}
+
+.kp-home .kp-connected-card-link svg {
+  width: 17px;
+  height: 17px;
+  stroke-width: 1.8;
+}
+
+.kp-home .kp-connected-card.is-teal .kp-connected-card-link {
+  color: #8e78ad;
+}
+
+.kp-home .kp-connected-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.kp-home .kp-connected-preview {
+  margin-top: auto;
+  padding-top: 20px;
+  min-width: 0;
+  font-size: 10px;
+  line-height: 1.4;
+  color: #344b65;
+}
+
+/* Student records */
+.kp-home .kp-connected-student-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: #f4f7f8;
+  border-radius: 7px;
+  margin-bottom: 9px;
+}
+
+.kp-home .kp-connected-student-tabs > span {
+  position: relative;
+  padding: 10px 4px;
+  text-align: center;
+  font-size: 10px;
+  color: #8290a0;
+}
+
+.kp-home .kp-connected-student-tabs > .is-selected {
+  color: #20394f;
+  background: #fff;
+  font-weight: 700;
+  border-radius: 7px 7px 0 0;
+}
+
+.kp-home .kp-connected-student-tabs > .is-selected::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 25%;
+  right: 25%;
+  height: 2px;
+  border-radius: 2px;
+  background: #169eb4;
+}
+
+.kp-home .kp-connected-student {
+  display: grid;
+  grid-template-columns: 27px minmax(0, 1fr) 56px auto;
+  gap: 7px;
+  align-items: center;
+  padding: 7px 5px;
+}
+
+.kp-home .kp-connected-avatar {
+  width: 27px;
+  height: 27px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 2px solid white;
+  border-radius: 50%;
+  color: #437069;
+  background: #e0f1ec;
+  font-size: 9px;
+  font-weight: 700;
+  box-shadow: 0 1px 3px #173b3b12;
+}
+
+.kp-home .kp-connected-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.kp-home .kp-connected-student-name {
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.kp-home .kp-connected-year {
+  font-size: 9px;
+}
+
+.kp-home .kp-connected-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: end;
+  gap: 4px;
+  white-space: nowrap;
+  padding: 3px 6px;
+  border-radius: 20px;
+  background: #e0f7ed;
+  color: #248768;
+  font-size: 8px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.kp-home .kp-connected-badge i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #23b875;
+}
+
+/* Timetable */
+.kp-home .kp-connected-timetable {
+  padding: 7px 7px 10px;
+  background: rgba(255, 255, 255, .86);
+  border-radius: 10px;
+}
+
+.kp-home .kp-connected-timetable-row {
+  display: grid;
+  grid-template-columns: 36px repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  align-items: stretch;
+  margin-top: 8px;
+}
+
+.kp-home .kp-connected-timetable-row.is-days {
+  margin: 0 0 12px;
+  align-items: center;
+  text-align: center;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.kp-home .kp-connected-time {
+  align-self: center;
+  font-size: 9px;
+}
+
+.kp-home .kp-connected-timetable-row > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  min-height: 49px;
+  padding: 7px;
+  border-radius: 7px;
+  background: linear-gradient(130deg, #e9f7ff, #e3f1fd);
+}
+
+.kp-home .kp-connected-timetable-row strong {
+  font-size: 8px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.kp-home .kp-connected-timetable-row div > span {
+  font-size: 8px;
+  color: #66839b;
+}
+
+/* Parent message and shared photos */
+.kp-home .kp-connected-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.kp-home .kp-connected-message > .kp-connected-avatar {
+  width: 33px;
+  height: 33px;
+}
+
+.kp-home .kp-connected-message-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.kp-home .kp-connected-bubble {
+  padding: 11px 12px 7px;
+  border-radius: 0 10px 10px 10px;
+  background: #f4f6f9;
+}
+
+.kp-home .kp-connected-bubble p {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.kp-home .kp-connected-bubble p > span {
+  color: #f45194;
+}
+
+.kp-home .kp-connected-bubble time {
+  display: block;
+  text-align: right;
+  font-size: 8px;
+  color: #9aa6b2;
+  margin-top: 4px;
+}
+
+.kp-home .kp-connected-gallery {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr;
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.kp-home .kp-connected-photo {
+  min-height: 75px;
+  border-radius: 8px;
+  background-color: #e6f1ee;
+  background-size: cover;
+  background-position: center;
+}
+
+.kp-home .kp-connected-photo.is-more {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background-position: 80% center;
+}
+
+.kp-home .kp-connected-photo.is-more::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(27, 47, 56, .43);
+}
+
+.kp-home .kp-connected-photo.is-more > span {
+  position: relative;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Invoice */
+.kp-home .kp-connected-invoice {
+  padding: 15px;
+  border: 1px solid #eef3f4;
+  border-radius: 11px;
+  background: #fff;
+  box-shadow: 0 4px 11px rgba(28, 65, 78, .055);
+}
+
+.kp-home .kp-connected-invoice-heading,
+.kp-home .kp-connected-invoice-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.kp-home .kp-connected-invoice-heading {
+  margin-bottom: 16px;
+}
+
+.kp-home .kp-connected-invoice-heading > strong {
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.kp-home .kp-connected-invoice-line {
+  margin-top: 13px;
+  font-size: 11px;
+}
+
+.kp-home .kp-connected-invoice-line.is-total {
+  border-top: 1px solid #edf1f5;
+  padding-top: 12px;
+  color: #1b314e;
+}
+
+/* Learning progress */
+.kp-home .kp-connected-progress {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 0 4px;
+}
+
+.kp-home .kp-connected-avatar.is-large {
+  width: 58px;
+  height: 58px;
+  font-size: 16px;
+  border-width: 3px;
+}
+
+.kp-home .kp-connected-progress-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.kp-home .kp-connected-progress-name {
+  display: block;
+  font-size: 10px;
+  color: #20344f;
+  font-weight: 750;
+}
+
+.kp-home .kp-connected-progress-year {
+  display: block;
+  font-size: 8px;
+  color: #7d8da0;
+  margin-top: 2px;
+  margin-bottom: 8px;
+}
+
+.kp-home .kp-connected-skill {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  gap: 7px;
+  align-items: center;
+  padding: 7px 0;
+  font-size: 10px;
+}
+
+.kp-home .kp-connected-skill-dot {
+  display: grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #fff2de;
+}
+
+.kp-home .kp-connected-skill-dot > span {
+  display: block;
+  width: 6px;
+  height: 8px;
+  border-radius: 50% 50% 45% 45%;
+  background: #f8b651;
+  box-shadow: inset -2px -1px 0 #ed962b;
+}
+
+.kp-home .kp-connected-badge.is-excellent {
+  color: #1788b7;
+  background: #e3f4ff;
+}
+
+/* Campus overview */
+.kp-home .kp-connected-campuses {
+  padding: 8px 12px;
+  border: 1px solid #edf3f3;
+  border-radius: 11px;
+  background: #fff;
+  box-shadow: 0 4px 11px rgba(28, 65, 78, .04);
+}
+
+.kp-home .kp-connected-campus {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  font-size: 10px;
+}
+
+.kp-home .kp-connected-campus > span:nth-child(2) {
+  font-size: 9px;
+  color: #687b90;
+}
+
+.kp-home .kp-connected-badge.is-attention {
+  color: #ed3f88;
+  background: #ffe4f0;
+}
+
+.kp-home .kp-connected-badge.is-attention i {
+  background: #ff4591;
+}
+
+/* Responsive layout */
+@media (max-width: 1100px) {
+  .kp-home .kp-connected-stat {
+    gap: 10px;
+    padding-inline: 10px;
+  }
+
+  .kp-home .kp-connected-stat > svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .kp-home .kp-connected-stat strong {
+    font-size: 20px;
+  }
+
+  .kp-home .kp-connected-school {
+    padding-inline: 10px;
+  }
+
+  .kp-home .kp-connected-grid {
+    gap: 13px;
+  }
+
+  .kp-home .kp-connected-card {
+    padding: 16px 11px 12px;
+  }
+
+  .kp-home .kp-connected-card-head {
+    grid-template-columns: 35px minmax(0, 1fr) 22px;
+    gap: 7px;
+  }
+
+  .kp-home .kp-connected-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 9px;
+  }
+
+  .kp-home .kp-connected-card-copy h3 {
+    font-size: 12px;
+  }
+
+  .kp-home .kp-connected-card-copy p {
+    font-size: 11px;
+  }
+
+  .kp-home .kp-connected-student {
+    gap: 5px;
+    grid-template-columns: 24px minmax(0, 1fr) 45px auto;
+  }
+
+  .kp-home .kp-connected-student-name,
+  .kp-home .kp-connected-year {
+    font-size: 8px;
+  }
+
+  .kp-home .kp-connected-campus {
+    gap: 6px;
+    font-size: 9px;
+  }
+
+  .kp-home .kp-connected-progress {
+    gap: 8px;
+  }
+
+  .kp-home .kp-connected-avatar.is-large {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+@media (max-width: 850px) {
+  .kp-home .kp-connected-trust-inner {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    row-gap: 22px;
+  }
+
+  .kp-home .kp-connected-stat {
+    grid-column: span 4;
+  }
+
+  .kp-home .kp-connected-school {
+    grid-column: span 3;
+  }
+
+  .kp-home .kp-connected-trust-inner > :nth-child(4) {
+    border-left: 0;
+  }
+
+  .kp-home .kp-connected-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .kp-home .kp-connected-card {
+    padding: 18px 14px 15px;
+  }
+
+  .kp-home .kp-connected-card-copy h3 {
+    font-size: 14px;
+  }
+
+  .kp-home .kp-connected-preview {
+    padding-top: 22px;
+  }
+}
+
+@media (max-width: 600px) {
+  .kp-home .kp-connected-trust {
+    padding-top: 23px;
+  }
+
+  .kp-home .kp-connected-stat {
+    gap: 7px;
+    padding-inline: 5px;
+  }
+
+  .kp-home .kp-connected-stat > svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .kp-home .kp-connected-stat strong {
+    font-size: 17px;
+  }
+
+  .kp-home .kp-connected-stat div > span {
+    font-size: 9px;
+  }
+
+  .kp-home .kp-connected-school {
+    padding-inline: 7px;
+  }
+
+  .kp-home .kp-connected-school img {
+    height: 45px;
+  }
+
+  .kp-home .kp-connected-school > strong {
+    font-size: 10px;
+  }
+
+  .kp-home .kp-connected-platform {
+    padding-top: 15px;
+  }
+
+  .kp-home .kp-connected-heading h2 {
+    font-size: 29px;
+    letter-spacing: -.9px;
+  }
+
+  .kp-home .kp-connected-heading > p {
+    font-size: 13px;
+  }
+
+  .kp-home .kp-connected-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 15px;
+  }
+
+  .kp-home .kp-connected-card {
+    padding: 19px 17px 17px;
+  }
+
+  .kp-home .kp-connected-card-head {
+    grid-template-columns: 43px minmax(0, 1fr) 32px;
+    gap: 10px;
+  }
+
+  .kp-home .kp-connected-icon {
+    width: 43px;
+    height: 43px;
+  }
+
+  .kp-home .kp-connected-card .kp-connected-card-link {
+    width: 32px;
+    min-height: 44px;
+  }
+
+  .kp-home .kp-connected-card-copy h3 {
+    font-size: 15px;
+  }
+
+  .kp-home .kp-connected-card-copy p {
+    font-size: 12px;
+  }
+
+  .kp-home .kp-connected-student-name {
+    font-size: 10px;
+  }
+
+  .kp-home .kp-connected-year {
+    font-size: 9px;
+  }
+
+  .kp-home .kp-connected-student {
+    grid-template-columns: 27px minmax(0, 1fr) 58px auto;
+    gap: 8px;
+  }
+
+  .kp-home .kp-connected-avatar.is-large {
+    width: 58px;
+    height: 58px;
+  }
+
+  .kp-home .kp-connected-campus {
+    font-size: 10px;
+    gap: 9px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .kp-home *, .kp-home *::before, .kp-home *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
