@@ -719,53 +719,850 @@ function Platform({ demoTo }) {
 }
 
 
+const KP_PEOPLE_VIEWS = [
+  {
+    id: 'leaders',
+    label: 'School leaders',
+    image: KP_CARD_ASSETS.classroom,
+    alt: 'A teacher helping children with a classroom activity',
+    position: 'center 40%',
+    benefits: [
+      [
+        'See what needs attention',
+        'Get a clear view of your school’s people, progress and operations.',
+      ],
+      [
+        'Keep teams working together',
+        'Align staff, streamline communication and reduce admin.',
+      ],
+      [
+        'Manage every campus',
+        'Oversee multiple locations with consistent processes and clear visibility.',
+      ],
+    ],
+  },
+  {
+    id: 'teachers',
+    label: 'Teachers',
+    image: KP_CARD_ASSETS.teacher,
+    alt: 'A teacher in a bright classroom',
+    position: 'center 30%',
+    benefits: [
+      [
+        'Start the day with a clear plan',
+        'Keep lessons, attendance and classroom activities together.',
+      ],
+      [
+        'Make learning progress visible',
+        'Record observations and celebrate each child’s milestones.',
+      ],
+      [
+        'Bring families into the conversation',
+        'Share classroom moments and practical updates in one place.',
+      ],
+    ],
+  },
+  {
+    id: 'families',
+    label: 'Families',
+    image: KP_CARD_ASSETS.emma,
+    alt: 'A smiling student at school',
+    position: 'center 30%',
+    benefits: [
+      [
+        'Feel closer to their school day',
+        'Follow the activities, discoveries and moments that matter.',
+      ],
+      [
+        'Find every update in one place',
+        'Keep messages, reminders and school events easy to find.',
+      ],
+      [
+        'Follow their learning journey',
+        'See progress and stay connected with your child’s teachers.',
+      ],
+    ],
+  },
+]
+
+function PeopleDashboard({ view }) {
+  return (
+    <div className="kp-people-dashboard">
+      <div className="kp-people-dashboard-top">
+        <h3>
+          {view === 'leaders'
+            ? 'Campus overview'
+            : view === 'teachers'
+              ? 'Your classroom today'
+              : 'Emma’s school day'}
+        </h3>
+
+        <span className="kp-people-filter">
+          {view === 'leaders'
+            ? 'All campuses'
+            : view === 'teachers'
+              ? 'Oak Class'
+              : 'Today'}
+          <span aria-hidden="true">⌄</span>
+        </span>
+      </div>
+
+      {view === 'leaders' && (
+        <>
+          <div className="kp-people-metrics">
+            <div>
+              <Users />
+              <span><strong>1,192</strong><small>Total students</small></span>
+            </div>
+            <div>
+              <ContactRound />
+              <span><strong>98</strong><small>Teaching staff</small></span>
+            </div>
+            <div>
+              <Building2 />
+              <span><strong>4</strong><small>Campuses</small></span>
+            </div>
+          </div>
+
+          <div className="kp-people-table-wrap">
+            <table className="kp-people-table">
+              <thead>
+                <tr>
+                  <th>Campus</th>
+                  <th>Students</th>
+                  <th>Attendance</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ['Main Campus', '482', '94%', 'Online'],
+                  ['Riverside Campus', '320', '96%', 'Online'],
+                  ['City Campus', '210', '91%', 'Attention'],
+                  ['West Campus', '180', '95%', 'Online'],
+                ].map(([name, students, attendance, status]) => (
+                  <tr key={name}>
+                    <td>{name}</td>
+                    <td>{students}</td>
+                    <td>{attendance}</td>
+                    <td>
+                      <span
+                        className={`kp-people-status ${
+                          status === 'Attention' ? 'is-alert' : ''
+                        }`}
+                      >
+                        <i />{status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+
+      {view === 'teachers' && (
+        <>
+          <div className="kp-people-metrics">
+            <div>
+              <Users />
+              <span><strong>24</strong><small>Students</small></span>
+            </div>
+            <div>
+              <BookOpen />
+              <span><strong>5</strong><small>Lessons today</small></span>
+            </div>
+            <div>
+              <MessageCircle />
+              <span><strong>3</strong><small>Family updates</small></span>
+            </div>
+          </div>
+
+          <div className="kp-people-lessons">
+            {[
+              ['08:30', 'Morning register', '24 students present', 'Complete'],
+              ['09:00', 'Exploring our world', 'Science · Oak Class', 'Now'],
+              ['10:30', 'Reading together', 'English · Oak Class', 'Next'],
+            ].map(([time, title, detail, status]) => (
+              <div className="kp-people-lesson" key={time}>
+                <time>{time}</time>
+                <div><strong>{title}</strong><span>{detail}</span></div>
+                <span className={`kp-people-status ${status === 'Now' ? 'is-blue' : ''}`}>
+                  {status}
+                </span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {view === 'families' && (
+        <>
+          <div className="kp-people-child">
+            <CardAvatar src={KP_CARD_ASSETS.emma} name="Emma Popescu" />
+            <div><strong>Emma Popescu</strong><span>Year 2 · Oak Class</span></div>
+            <span className="kp-people-status"><i />At school</span>
+          </div>
+
+          <div className="kp-people-family-update">
+            <span className="kp-people-update-icon"><Sparkles size={19} /></span>
+            <div>
+              <strong>A little discovery. A big smile.</strong>
+              <p>
+                Emma explored how plants grow and shared her
+                observations with the class.
+              </p>
+            </div>
+          </div>
+
+          <div className="kp-people-family-bottom">
+            <span><MessageCircle size={14} />2 new messages</span>
+            <span><CalendarDays size={14} />Sports day · Friday</span>
+          </div>
+        </>
+      )}
+
+      <span className="kp-people-sample">Illustrative school data</span>
+    </div>
+  )
+}
+
+function ParentPhone({ messages = false }) {
+  return (
+    <div className={`kp-parent-phone ${messages ? 'is-messages' : 'is-updates'}`}>
+      <div className="kp-parent-phone-screen">
+        <div className="kp-parent-phone-notch" aria-hidden="true" />
+
+        <div className="kp-parent-phone-status" aria-hidden="true">
+          <strong>9:41</strong>
+          <span>••• ▰</span>
+        </div>
+
+        <h3>{messages ? 'Messages' : 'Updates'}</h3>
+
+        <div className="kp-parent-phone-tabs">
+          <span className="is-current">{messages ? 'All' : 'All'}</span>
+          <span>{messages ? 'Unread' : 'Moments'}</span>
+          {!messages && <span>Announcements</span>}
+        </div>
+
+        {messages ? (
+          <div className="kp-parent-inbox">
+            {[
+              ['AP', 'Ana Popescu', 'Thank you for the update!', '10:24', KP_CARD_ASSETS.teacher],
+              ['MC', 'Math Class', 'Next week’s materials', '10:08', null],
+              ['SA', 'School Announcements', 'Spring fair this Friday', '09:41', null],
+              ['AI', 'Alexandra Ionescu', 'See you tomorrow!', '08:12', KP_CARD_ASSETS.sofia],
+            ].map(([initials, name, text, time, image], index) => (
+              <div className="kp-parent-inbox-row" key={name}>
+                {image ? (
+                  <CardAvatar src={image} name={name} />
+                ) : (
+                  <span className={`kp-parent-inbox-icon tone-${index}`}>
+                    {initials}
+                  </span>
+                )}
+
+                <div>
+                  <strong>{name}</strong>
+                  <p>{text}</p>
+                </div>
+
+                <time>{time}</time>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="kp-parent-post">
+            <div className="kp-parent-post-author">
+              <CardAvatar src={KP_CARD_ASSETS.teacher} name="Emma Wilson" />
+              <div><strong>Ms. Emma</strong><span>2 hours ago</span></div>
+            </div>
+
+            <img
+              className="kp-parent-post-photo"
+              src={KP_CARD_ASSETS.classroom}
+              alt="Children exploring plants with their teacher"
+              loading="lazy"
+            />
+
+            <h4>Exploring together</h4>
+            <p>
+              Today we discovered how plants grow.
+              So many questions, ideas and little discoveries!
+            </p>
+
+            <div className="kp-parent-post-reactions">
+              <span><Heart size={12} fill="currentColor" />12</span>
+              <span><MessageCircle size={12} />3</span>
+            </div>
+          </div>
+        )}
+
+        <div className="kp-parent-phone-nav" aria-hidden="true">
+          <span><LayoutDashboard /><small>Home</small></span>
+          <span className={!messages ? 'is-current' : ''}>
+            <Heart /><small>Updates</small>
+          </span>
+          <span className={messages ? 'is-current' : ''}>
+            <MessageCircle /><small>Messages</small>
+          </span>
+          <span><Menu /><small>More</small></span>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function Community({ demoTo }) {
   const [active, setActive] = useState(0)
-  const role = ROLES[active]
-  return <section className="kp-section kp-community" id="kp-community" aria-labelledby="kp-community-title">
-    <div className="kp-container">
-      <div className="kp-centered-heading"><span className="kp-eyebrow">BUILT AROUND YOUR PEOPLE</span><h2 id="kp-community-title">One school community.<br /><span>A better day for everyone.</span></h2><p>Different responsibilities. The same need to stay informed.</p></div>
-      <div className="kp-role-picker" role="group" aria-label="Choose your role">{ROLES.map(({ id, label, icon: Icon }, index) => <button type="button" key={id} aria-pressed={active === index} onClick={() => setActive(index)} className={active === index ? 'is-active' : ''}><Icon size={18} />{label}</button>)}</div>
-      <div className="kp-role-content">
-        <div className="kp-role-visual"><div className="kp-role-board"><div className="kp-board-top"><IconTile icon={role.icon} tone={role.tone} /><span className="kp-pill">{role.label}</span></div><h3>{role.visualTitle}</h3><p>{role.visualSub}</p><div className="kp-role-metrics">{role.metrics.map(([label, value]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div><span className="kp-micro">EVERYDAY PRIORITIES</span><ul className="kp-role-tasks">{role.tasks.map(task => <li key={task}><CheckCircle2 size={17} />{task}</li>)}</ul><div className="kp-board-bottom"><span className="kp-small-dot" />Illustrative role overview</div></div><span className="kp-role-orbit" aria-hidden="true" /></div>
-        <div className="kp-role-copy"><span className="kp-eyebrow">FOR {role.label.toUpperCase()}</span><h3>{role.title}</h3><p>{role.text}</p><ul className="kp-check-list">{role.points.map(point => <li key={point}><CheckCircle2 size={17} />{point}</li>)}</ul><Action to={demoTo} secondary>See your role in a demo</Action></div>
+  const tabRefs = useRef([])
+  const uid = useId()
+  const selected = KP_PEOPLE_VIEWS[active]
+
+  function handleTabKey(event, index) {
+    let next
+
+    if (event.key === 'ArrowRight') {
+      next = (index + 1) % KP_PEOPLE_VIEWS.length
+    } else if (event.key === 'ArrowLeft') {
+      next = (index - 1 + KP_PEOPLE_VIEWS.length) % KP_PEOPLE_VIEWS.length
+    } else if (event.key === 'Home') {
+      next = 0
+    } else if (event.key === 'End') {
+      next = KP_PEOPLE_VIEWS.length - 1
+    } else {
+      return
+    }
+
+    event.preventDefault()
+    setActive(next)
+    tabRefs.current[next]?.focus()
+  }
+
+  return (
+    <section
+      className="kp-people-section"
+      id="kp-community"
+      aria-labelledby={`${uid}-heading`}
+    >
+      <div className="kp-container">
+        <div className="kp-people-stage">
+          <div className="kp-people-intro">
+            <h2 id={`${uid}-heading`}>
+              Built around the people
+              <br />
+              who make school happen.
+            </h2>
+
+            <div
+              className="kp-people-tabs"
+              role="tablist"
+              aria-label="Explore Kinderpedia by role"
+            >
+              {KP_PEOPLE_VIEWS.map((role, index) => (
+                <button
+                  key={role.id}
+                  ref={element => { tabRefs.current[index] = element }}
+                  type="button"
+                  role="tab"
+                  id={`${uid}-tab-${role.id}`}
+                  aria-selected={active === index}
+                  aria-controls={`${uid}-panel`}
+                  tabIndex={active === index ? 0 : -1}
+                  className={active === index ? 'is-active' : ''}
+                  onClick={() => setActive(index)}
+                  onKeyDown={event => handleTabKey(event, index)}
+                >
+                  {role.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div
+            className="kp-people-panel"
+            id={`${uid}-panel`}
+            role="tabpanel"
+            aria-labelledby={`${uid}-tab-${selected.id}`}
+            tabIndex={0}
+          >
+            <div className="kp-people-benefits" key={`${selected.id}-copy`}>
+              {selected.benefits.map(([title, text]) => (
+                <div className="kp-people-benefit" key={title}>
+                  <span className="kp-people-check">
+                    <Check size={16} strokeWidth={2.5} aria-hidden="true" />
+                  </span>
+
+                  <div>
+                    <h3>{title}</h3>
+                    <p>{text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className={`kp-people-visual is-${selected.id}`}>
+              <img
+                key={selected.image}
+                className="kp-people-photo"
+                src={selected.image}
+                alt={selected.alt}
+                style={{ objectPosition: selected.position }}
+                loading="lazy"
+              />
+
+              <div
+                className="kp-people-dashboard-wrap"
+                key={`${selected.id}-dashboard`}
+              >
+                <PeopleDashboard view={selected.id} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="kp-parent-banner">
+          <div
+            className="kp-parent-phones"
+            role="img"
+            aria-label="Illustrative parent app showing classroom updates and messages"
+          >
+            <ParentPhone />
+            <ParentPhone messages />
+          </div>
+
+          <div className="kp-parent-banner-copy">
+            <h2>Closer to every school day.</h2>
+            <p>
+              Keep families informed with messages, moments
+              and updates in one app.
+            </p>
+
+            <div className="kp-parent-benefits">
+              {[
+                [ContactRound, 'Daily updates', 'Share classroom moments and important announcements.'],
+                [MessageCircle, 'Direct communication', 'Message teachers and school staff securely.'],
+                [Heart, 'Shared moments', 'Celebrate learning, achievements and everyday progress.'],
+              ].map(([Icon, title, text]) => (
+                <div className="kp-parent-benefit" key={title}>
+                  <span><Icon size={20} strokeWidth={1.6} /></span>
+                  <div><h3>{title}</h3><p>{text}</p></div>
+                </div>
+              ))}
+            </div>
+
+            <Action to={demoTo} className="kp-parent-cta">
+              Explore parent engagement
+            </Action>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  )
 }
+
+
 
 function SchoolStories() {
-  return <section className="kp-section" id="kp-stories" aria-labelledby="kp-stories-title">
-    <div className="kp-container"><div className="kp-section-heading"><div><span className="kp-eyebrow">REAL SCHOOLS. EVERYDAY CHANGE.</span><h2 id="kp-stories-title">See what changes<br /><span>when people connect.</span></h2></div><a className="kp-text-button" href={`${OFFICIAL}/en/case-studies/maple-bear-case-study`}>Read the school’s story <ArrowUpRight size={18} /></a></div>
-      <article className="kp-story"><div className="kp-story-art" aria-hidden="true"><span className="kp-story-kicker">SCHOOL SPOTLIGHT</span><div className="kp-story-monogram">M<span>B</span></div><div className="kp-story-school">Maple Bear<br /><span>Cluj · Romania</span></div><div className="kp-story-line" /></div><div className="kp-story-copy"><span className="kp-eyebrow">COMMUNICATION & SCHOOL VISIBILITY</span><h3>School messages that reach the right people.</h3><p>At Maple Bear Cluj, important updates used to disappear among replies. Kinderpedia helped the team organise family communication and gave leaders a clearer view across school activity.</p><div className="kp-story-outcomes"><span><MessageCircle size={18} />More focused family communication</span><span><LayoutDashboard size={18} />A shared view of school activity</span></div><a href={`${OFFICIAL}/en/case-studies/maple-bear-case-study`} className="kp-text-button">Explore the Maple Bear story <ArrowRight size={18} /></a></div></article>
-    </div>
-  </section>
-}
-
-function Onboarding({ demoTo }) {
-  const steps = [
-    ['01', 'Start with your school', 'Walk through your current tools, everyday challenges and what your team needs most.'],
-    ['02', 'Plan the right setup', 'Review your data, workflows and rollout requirements with the Kinderpedia team.'],
-    ['03', 'Bring your people along', 'Agree a training and launch plan that supports staff and families as they get started.'],
+  const stories = [
+    {
+      name: 'Maple Bear',
+      logo: KP_CARD_ASSETS.mapleBear,
+      image: KP_CARD_ASSETS.classroom,
+      position: '35% center',
+      title: 'A strong foundation for lifelong learning.',
+      href: `${OFFICIAL}/en/case-studies/maple-bear-case-study`,
+    },
+    {
+      name: 'Helikon School',
+      logo: KP_CARD_ASSETS.helikon,
+      image: KP_CARD_ASSETS.classroom,
+      position: '85% center',
+      title: 'A more connected school community.',
+      href: `${OFFICIAL}/en/case-studies/helikon-school`,
+    },
+    {
+      name: 'Just4Kids',
+      logo: KP_CARD_ASSETS.just4kids,
+      image: KP_CARD_ASSETS.classroom,
+      position: '55% center',
+      title: 'Simpler communication. Happier families.',
+      href: `${OFFICIAL}/en/case-studies/just4kids-school`,
+    },
   ]
-  return <section className="kp-section kp-onboarding" aria-labelledby="kp-onboarding-title"><div className="kp-container"><div className="kp-section-heading"><div><span className="kp-eyebrow">A THOUGHTFUL START</span><h2 id="kp-onboarding-title">A new platform.<br /><span>A clear way forward.</span></h2></div><p>You know your school. Use the first conversation to shape a rollout around the people and processes that matter.</p></div><div className="kp-steps">{steps.map(([number, title, text]) => <article key={number}><span className="kp-step-number">{number}</span><h3>{title}</h3><p>{text}</p></article>)}</div><div className="kp-onboarding-bottom"><span><Users size={18} />Make your team’s priorities the starting point.</span><Action to={demoTo} secondary>Talk through your setup</Action></div></div></section>
+
+  return (
+    <section
+      className="kp-school-proof"
+      id="kp-stories"
+      aria-labelledby="kp-school-proof-title"
+    >
+      <div className="kp-container">
+        <h2 id="kp-school-proof-title">
+          Real schools. More connected communities.
+        </h2>
+
+        <div className="kp-school-proof-grid">
+          {stories.map(story => (
+            <a
+              key={story.name}
+              className="kp-school-proof-card"
+              href={story.href}
+              aria-label={`Read the ${story.name} story`}
+            >
+              <div className="kp-school-proof-photo">
+                <img
+                  src={story.image}
+                  alt=""
+                  loading="lazy"
+                  style={{ objectPosition: story.position }}
+                />
+              </div>
+
+              <div className="kp-school-proof-copy">
+                <div className="kp-school-proof-brand">
+                  <img
+                    src={story.logo}
+                    alt=""
+                    loading="lazy"
+                  />
+                  <span>{story.name}</span>
+                </div>
+
+                <h3>{story.title}</h3>
+
+                <span className="kp-school-proof-link">
+                  Read their story
+                  <ArrowRight size={13} aria-hidden="true" />
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <div className="kp-tools-strip">
+          <div className="kp-tools-copy">
+            <h3>Works with the tools you already use.</h3>
+            <p>Seamless integrations to keep your school connected.</p>
+          </div>
+
+          <ul className="kp-tools-brands" aria-label="Integrations">
+            <li>
+              <span className="kp-tools-zoom">zoom</span>
+            </li>
+
+            <li>
+              <span className="kp-tools-stripe">stripe</span>
+            </li>
+
+            <li>
+              <span className="kp-tools-openapply">
+                <svg
+                  width="23"
+                  height="25"
+                  viewBox="0 0 24 26"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 2 3.5 7v11L9 21.5v-7L6.8 13V9L12 6l5.2 3v5L12 17v7l8.5-5V7L12 2Z"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                OpenApply
+              </span>
+            </li>
+
+            <li>
+              <span className="kp-tools-wonde">
+                <span className="kp-tools-wonde-mark" aria-hidden="true">
+                  <ShieldCheck size={23} strokeWidth={2.4} />
+                </span>
+                wonde
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  )
 }
 
-function DataCare({ demoTo }) {
-  return <section className="kp-container kp-data-care" aria-labelledby="kp-data-title"><div className="kp-data-icon"><ShieldCheck size={34} /></div><div><span className="kp-eyebrow">IMPORTANT INFORMATION. CAREFUL QUESTIONS.</span><h2 id="kp-data-title">Your school’s data deserves a proper conversation.</h2><p>Include your IT and leadership teams in the demo. Review access permissions, data handling, integrations and your school’s requirements before you make the move.</p></div><Action to={demoTo} secondary>Discuss your requirements</Action></section>
+function Onboarding() {
+  const steps = [
+    [
+      'Discover',
+      'We learn about your school’s needs and goals.',
+    ],
+    [
+      'Customise',
+      'We tailor Kinderpedia to your processes.',
+    ],
+    [
+      'Connect',
+      'We help you migrate data and onboard your team.',
+    ],
+    [
+      'Grow',
+      'You’re ready to go, with ongoing support.',
+    ],
+  ]
+
+  return (
+    <section
+      className="kp-start-path"
+      aria-labelledby="kp-start-path-title"
+    >
+      <div className="kp-container">
+        <h2 id="kp-start-path-title">
+          A clear path from first demo to first school day.
+        </h2>
+
+        <ol className="kp-start-path-grid">
+          {steps.map(([title, text], index) => (
+            <li className="kp-start-path-step" key={title}>
+              <span className="kp-start-path-number">
+                {index + 1}
+              </span>
+
+              <div>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )
 }
+
+function DataCare() {
+  const items = [
+    {
+      icon: ShieldCheck,
+      title: 'Role-based access',
+      text: 'Keep data in the right hands.',
+      tone: 'teal',
+    },
+    {
+      icon: LockKeyhole,
+      title: 'Secure payments',
+      text: 'Payments processed through Stripe.',
+      tone: 'blue',
+    },
+    {
+      icon: Users,
+      title: 'Private profiles',
+      text: 'Access for the people who need it.',
+      tone: 'green',
+    },
+  ]
+
+  return (
+    <section
+      className="kp-privacy-strip"
+      aria-labelledby="kp-privacy-strip-title"
+    >
+      <div className="kp-container kp-privacy-strip-inner">
+        <h2 id="kp-privacy-strip-title">
+          <span>Privacy</span> built into everyday school <span>life.</span>
+        </h2>
+
+        <div className="kp-privacy-items">
+          {items.map(({ icon: Icon, title, text, tone }) => (
+            <div
+              key={title}
+              className={`kp-privacy-item is-${tone}`}
+            >
+              <Icon
+                size={28}
+                strokeWidth={1.7}
+                aria-hidden="true"
+              />
+
+              <div>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 
 function FAQs() {
-  return <section className="kp-section kp-faq" aria-labelledby="kp-faq-title"><div className="kp-container kp-faq-grid"><div><span className="kp-eyebrow">A FEW USEFUL ANSWERS</span><h2 id="kp-faq-title">Before you<br /><span>take the next step.</span></h2><p>Start here, then bring your school’s specific questions to a demo.</p></div><div className="kp-faq-items">{FAQS.map(([question, answer]) => <details key={question}><summary>{question}<Plus size={19} aria-hidden="true" /></summary><p>{answer}</p></details>)}</div></div></section>
+  const questions = [
+    [
+      'Is Kinderpedia right for our school?',
+      'Kinderpedia brings school administration, classroom activity and family communication together for schools, nurseries and education groups.',
+    ],
+    [
+      'Can we migrate our existing data?',
+      'Yes. The Kinderpedia team can help review your current systems, prepare your records and plan a structured migration during onboarding.',
+    ],
+    [
+      'How does staff training work?',
+      'Your team receives guided onboarding, training resources and ongoing support so staff can confidently use the platform from day one.',
+    ],
+    [
+      'Can we manage multiple campuses?',
+      'Yes. School groups can oversee multiple campuses, teams and student communities from one connected platform with clear access controls.',
+    ],
+  ]
+
+  return (
+    <section
+      className="kp-faq-refresh"
+      aria-labelledby="kp-faq-refresh-title"
+    >
+      <div className="kp-container kp-faq-refresh-grid">
+        <h2 id="kp-faq-refresh-title">
+          A few things you might be wondering.
+        </h2>
+
+        <div className="kp-faq-refresh-items">
+          {questions.map(([question, answer]) => (
+            <details key={question}>
+              <summary>
+                <span>{question}</span>
+                <Plus size={16} aria-hidden="true" />
+              </summary>
+
+              <p>{answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
 }
+
 
 function FinalCTA({ demoTo }) {
-  return <section className="kp-container kp-final-wrap"><div className="kp-final"><div className="kp-final-orbit" aria-hidden="true" /><span className="kp-eyebrow">LET’S MAKE THE SCHOOL DAY SIMPLER</span><h2>More connected people.<br /><span>More room for what matters.</span></h2><p>See how Kinderpedia could work for your school, your team and your families.</p><Action to={demoTo} /><span className="kp-final-note">A conversation about your school. A closer look at the platform.</span></div></section>
+  return (
+    <section className="kp-final-refresh-wrap">
+      <div className="kp-container">
+        <div className="kp-final-refresh">
+          <div className="kp-final-refresh-copy">
+            <h2>
+              Make more room for <span>education.</span>
+            </h2>
+
+            <p>
+              Less admin. More connection. A brighter school day for everyone.
+            </p>
+
+            <Action to={demoTo}>
+              Book a free demo
+            </Action>
+          </div>
+
+          <div className="kp-final-refresh-photo">
+            <img
+              src={KP_CARD_ASSETS.emma}
+              alt="Student smiling at school"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
 }
 
+
 function Footer() {
-  return <footer className="kp-footer"><div className="kp-container kp-footer-inner"><div><Logo /><p>Connecting schools, teachers and families.</p></div><nav aria-label="Footer navigation"><a href="#kp-platform">Platform</a><a href="#kp-community">Community</a><a href="#kp-stories">School stories</a><a href={OFFICIAL + '/en'}>Official website <ArrowUpRight size={13} /></a></nav><small>© {new Date().getFullYear()} Kinderpedia</small></div></footer>
+  return (
+    <footer className="kp-footer-refresh">
+      <div className="kp-container">
+        <div className="kp-footer-refresh-grid">
+          <div className="kp-footer-refresh-brand">
+            <Logo />
+
+            <p>
+              School management software
+              <br />
+              for a brighter tomorrow.
+            </p>
+          </div>
+
+          <div className="kp-footer-refresh-column">
+            <h3>Platform</h3>
+            <a href="#kp-platform">Overview</a>
+            <a href="#kp-platform">All modules</a>
+            <a href={`${OFFICIAL}/en/integrations`}>Integrations</a>
+            <a href={`${OFFICIAL}/en/security`}>Security</a>
+          </div>
+
+          <div className="kp-footer-refresh-column">
+            <h3>Solutions</h3>
+            <a href={`${OFFICIAL}/en/solutions/schools`}>
+              For schools
+            </a>
+            <a href={`${OFFICIAL}/en/solutions/preschool`}>
+              For preschools
+            </a>
+            <a href={`${OFFICIAL}/en/solutions/education-franchises`}>
+              For education groups
+            </a>
+            <a href={`${OFFICIAL}/en/features/multi-location-management`}>
+              Multi-campus
+            </a>
+          </div>
+
+          <div className="kp-footer-refresh-column">
+            <h3>Resources</h3>
+            <a href={`${OFFICIAL}/en/blog`}>Blog</a>
+            <a href={`${OFFICIAL}/en/resources/guides`}>Guides</a>
+            <a href={`${OFFICIAL}/en/webinars`}>Webinars</a>
+            <a href={`${OFFICIAL}/en/contact`}>Help centre</a>
+          </div>
+
+          <div className="kp-footer-refresh-column">
+            <h3>Company</h3>
+            <a href={`${OFFICIAL}/en/company/about`}>
+              About us
+            </a>
+            <a href={`${OFFICIAL}/en/company/careers`}>
+              Careers
+            </a>
+            <a href={`${OFFICIAL}/en/contact`}>Contact</a>
+            <a href={`${OFFICIAL}/en/pricing`}>Pricing</a>
+          </div>
+
+          <div className="kp-footer-refresh-social">
+            <div>
+              <a href="https://www.linkedin.com" aria-label="LinkedIn">
+                in
+              </a>
+
+              <a href="https://www.instagram.com" aria-label="Instagram">
+                ◎
+              </a>
+
+              <a href="https://www.youtube.com" aria-label="YouTube">
+                ▶
+              </a>
+            </div>
+
+            <p>
+              Homepage design concept
+              <br />
+              for Kinderpedia © 2027
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  )
 }
 
 export default function Home({ showChrome = false, demoTo = '/demo' }) {
@@ -777,7 +1574,7 @@ export default function Home({ showChrome = false, demoTo = '/demo' }) {
       <Community demoTo={demoTo} /><SchoolStories /><Onboarding demoTo={demoTo} />
       <DataCare demoTo={demoTo} /><FAQs /><FinalCTA demoTo={demoTo} />
     </div>
-    {showChrome && <Footer />}
+    <Footer />
   </div>
 }
 
@@ -2364,6 +3161,1998 @@ const styles = `
   }
 }
 
+/* People section */
+.kp-home .kp-people-section {
+  padding: 42px 0 24px;
+  color: #10243e;
+  scroll-margin-top: 90px;
+  background:
+    radial-gradient(ellipse at 77% 26%, #dcf1eb 0%, transparent 58%),
+    linear-gradient(110deg, #f2fbf8, #edf9f5 65%, #e4f4ef);
+}
+
+.kp-home .kp-people-stage {
+  position: relative;
+  min-height: 440px;
+}
+
+.kp-home .kp-people-intro {
+  position: relative;
+  z-index: 3;
+  width: 46%;
+  padding: 10px 0 0;
+}
+
+.kp-home .kp-people-intro h2 {
+  margin: 0;
+  color: #10243e;
+  font-size: clamp(26px, 2.55vw, 36px);
+  line-height: 1.17;
+  letter-spacing: -1.15px;
+  font-weight: 750;
+}
+
+.kp-home .kp-people-tabs {
+  display: flex;
+  gap: 35px;
+  margin-top: 23px;
+  border-bottom: 1px solid #d3e7e2;
+}
+
+.kp-home .kp-people-tabs button {
+  position: relative;
+  min-height: 48px;
+  padding: 10px 0 13px;
+  background: transparent;
+  border: 0;
+  color: #617a88;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 550;
+  cursor: pointer;
+}
+
+.kp-home .kp-people-tabs button::after {
+  content: '';
+  position: absolute;
+  height: 3px;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  border-radius: 3px;
+  background: #ff478e;
+  transform: scaleX(0);
+  transition: transform .2s ease;
+}
+
+.kp-home .kp-people-tabs button.is-active {
+  color: #10243e;
+  font-weight: 750;
+}
+
+.kp-home .kp-people-tabs button.is-active::after {
+  transform: scaleX(1);
+}
+
+.kp-home .kp-people-tabs button:focus-visible {
+  outline: 2px solid #129e98;
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+
+.kp-home .kp-people-panel {
+  margin-top: 28px;
+}
+
+.kp-home .kp-people-panel:focus-visible {
+  outline: 2px solid #129e98;
+  outline-offset: 5px;
+}
+
+.kp-home .kp-people-benefits {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  gap: 23px;
+  width: 44%;
+  padding-bottom: 38px;
+  animation: kp-people-enter .28s ease both;
+}
+
+.kp-home .kp-people-benefit {
+  display: grid;
+  grid-template-columns: 27px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.kp-home .kp-people-check {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  margin-top: 1px;
+  color: white;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #62a8aa, #388e96);
+  box-shadow: inset 0 1px 0 #ffffff40;
+}
+
+.kp-home .kp-people-benefit h3 {
+  margin: 0 0 5px;
+  font-size: 14px;
+  line-height: 1.35;
+  font-weight: 750;
+  letter-spacing: -.2px;
+}
+
+.kp-home .kp-people-benefit p {
+  margin: 0;
+  max-width: 345px;
+  color: #627e8c;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Role-specific photograph and floating dashboard */
+.kp-home .kp-people-visual {
+  position: absolute;
+  inset: -42px -25px 10px 47%;
+  pointer-events: none;
+}
+
+.kp-home .kp-people-photo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 345px;
+  display: block;
+  object-fit: cover;
+  border-radius: 0 0 18px 18px;
+  mask-image:
+    linear-gradient(to bottom, #000 65%, transparent 100%);
+  animation: kp-people-photo-enter .4s ease both;
+}
+
+.kp-home .kp-people-visual::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 30%;
+  height: 345px;
+  background: linear-gradient(90deg, #edf9f5, transparent);
+}
+
+.kp-home .kp-people-dashboard-wrap {
+  position: absolute;
+  z-index: 2;
+  width: 88%;
+  max-width: 475px;
+  left: -8px;
+  top: 145px;
+  animation: kp-people-enter .3s ease both;
+}
+
+.kp-home .kp-people-dashboard {
+  padding: 21px 20px 10px;
+  border: 1px solid #ffffffef;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, .97);
+  box-shadow:
+    0 15px 35px rgba(35, 108, 107, .14),
+    0 3px 8px rgba(35, 108, 107, .04);
+}
+
+.kp-home .kp-people-dashboard-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.kp-home .kp-people-dashboard-top h3 {
+  font-size: 13px;
+  font-weight: 750;
+  margin: 0;
+  letter-spacing: -.3px;
+}
+
+.kp-home .kp-people-filter {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  min-width: 108px;
+  padding: 6px 8px;
+  font-size: 8px;
+  color: #597082;
+  border: 1px solid #e8eef2;
+  border-radius: 5px;
+  background: white;
+}
+
+.kp-home .kp-people-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 25px 0 20px;
+}
+
+.kp-home .kp-people-metrics > div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.kp-home .kp-people-metrics svg {
+  width: 25px;
+  height: 25px;
+  flex-shrink: 0;
+  stroke-width: 1.7;
+  color: #079eac;
+}
+
+.kp-home .kp-people-metrics > div:nth-child(2) svg {
+  color: #ff4d98;
+}
+
+.kp-home .kp-people-metrics > div:nth-child(3) svg {
+  color: #169fe3;
+}
+
+.kp-home .kp-people-metrics strong,
+.kp-home .kp-people-metrics small {
+  display: block;
+}
+
+.kp-home .kp-people-metrics strong {
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 750;
+}
+
+.kp-home .kp-people-metrics small {
+  color: #748898;
+  font-size: 8px;
+  margin-top: 3px;
+}
+
+.kp-home .kp-people-table-wrap {
+  overflow-x: auto;
+}
+
+.kp-home .kp-people-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 8px;
+}
+
+.kp-home .kp-people-table th {
+  background: #f5f8fa;
+  font-size: 8px;
+  color: #687f91;
+  font-weight: 600;
+  padding: 8px 7px;
+}
+
+.kp-home .kp-people-table td {
+  padding: 7px;
+  border-bottom: 1px solid #f0f4f5;
+  color: #435e74;
+  white-space: nowrap;
+}
+
+.kp-home .kp-people-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.kp-home .kp-people-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 6px;
+  border-radius: 20px;
+  background: #e0f6ed;
+  color: #21845f;
+  font-size: 7px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.kp-home .kp-people-status i {
+  display: block;
+  width: 5px;
+  height: 5px;
+  background: #22b67c;
+  border-radius: 50%;
+}
+
+.kp-home .kp-people-status.is-alert {
+  background: #ffe5f0;
+  color: #f03b84;
+}
+
+.kp-home .kp-people-status.is-alert i {
+  background: #ff438f;
+}
+
+.kp-home .kp-people-status.is-blue {
+  color: #1687bb;
+  background: #e6f5ff;
+}
+
+.kp-home .kp-people-sample {
+  display: block;
+  margin-top: 7px;
+  text-align: right;
+  color: #8499a5;
+  font-size: 7px;
+}
+
+.kp-home .kp-people-lesson {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 11px 0;
+  border-top: 1px solid #edf3f4;
+}
+
+.kp-home .kp-people-lesson time {
+  color: #74909d;
+  font-size: 9px;
+}
+
+.kp-home .kp-people-lesson > div {
+  flex: 1;
+}
+
+.kp-home .kp-people-lesson strong,
+.kp-home .kp-people-lesson div > span {
+  display: block;
+}
+
+.kp-home .kp-people-lesson strong {
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.kp-home .kp-people-lesson div > span {
+  margin-top: 3px;
+  font-size: 8px;
+  color: #78909e;
+}
+
+.kp-home .kp-people-child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 22px 0 17px;
+}
+
+.kp-home .kp-people-child > div {
+  flex: 1;
+}
+
+.kp-home .kp-people-child strong,
+.kp-home .kp-people-child div > span {
+  display: block;
+  font-size: 10px;
+}
+
+.kp-home .kp-people-child div > span {
+  font-size: 8px;
+  color: #718b9a;
+  margin-top: 3px;
+}
+
+.kp-home .kp-people-family-update {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 10px;
+  background: #eff9f6;
+}
+
+.kp-home .kp-people-update-icon {
+  color: #11a596;
+}
+
+.kp-home .kp-people-family-update strong {
+  font-size: 10px;
+}
+
+.kp-home .kp-people-family-update p {
+  margin: 5px 0 0;
+  font-size: 9px;
+  color: #607d8a;
+  line-height: 1.65;
+}
+
+.kp-home .kp-people-family-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 19px;
+  padding-bottom: 7px;
+}
+
+.kp-home .kp-people-family-bottom > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 8px;
+  color: #618392;
+}
+
+/* Dark teal parent app section */
+.kp-home .kp-parent-banner {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 35px;
+  min-height: 390px;
+  border: 1px solid #14757b;
+  border-radius: 19px;
+  color: #fff;
+  background:
+    radial-gradient(ellipse at 20% 75%, #117d7d66, transparent 60%),
+    linear-gradient(115deg, #005960, #004b53 65%, #005961);
+}
+
+.kp-home .kp-parent-banner::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: .35;
+  background-image:
+    linear-gradient(#ffffff0c 1px, transparent 1px),
+    linear-gradient(90deg, #ffffff0c 1px, transparent 1px);
+  background-size: 31px 31px;
+  pointer-events: none;
+}
+
+.kp-home .kp-parent-banner-copy {
+  position: relative;
+  z-index: 2;
+  padding: 32px 30px 29px 0;
+}
+
+.kp-home .kp-parent-banner-copy h2 {
+  color: #fff;
+  font-size: clamp(25px, 2.4vw, 34px);
+  line-height: 1.2;
+  letter-spacing: -.8px;
+  font-weight: 650;
+}
+
+.kp-home .kp-parent-banner-copy > p {
+  color: #d0e6e6;
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 415px;
+  margin: 12px 0 21px;
+}
+
+.kp-home .kp-parent-benefits {
+  display: grid;
+  gap: 17px;
+}
+
+.kp-home .kp-parent-benefit {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+}
+
+.kp-home .kp-parent-benefit > span {
+  width: 37px;
+  height: 37px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 11px;
+  color: #ddfffa;
+  background: linear-gradient(145deg, #12a89e, #087f81);
+  box-shadow: inset 0 1px 0 #ffffff24;
+}
+
+.kp-home .kp-parent-benefit h3 {
+  font-size: 13px;
+  font-weight: 650;
+  color: #fff;
+  margin: 1px 0 4px;
+}
+
+.kp-home .kp-parent-benefit p {
+  color: #bbd9db;
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.kp-home .kp-parent-banner .kp-parent-cta {
+  margin-top: 22px;
+  min-height: 43px;
+  padding: 11px 18px;
+  border: 1px solid #ff5c9c;
+  border-radius: 10px;
+  background: linear-gradient(120deg, #ff5196, #fa3c87);
+  color: #fff;
+  font-size: 11px;
+  box-shadow: 0 5px 15px #002f3b26, inset 0 1px 0 #ffffff33;
+}
+
+.kp-home .kp-parent-banner .kp-parent-cta:hover {
+  background: #eb337d;
+  transform: translateY(-2px);
+}
+
+/* Phones built in HTML/CSS */
+.kp-home .kp-parent-phones {
+  position: relative;
+  min-width: 0;
+  min-height: 390px;
+}
+
+.kp-home .kp-parent-phone {
+  position: absolute;
+  top: 20px;
+  width: 210px;
+  height: 405px;
+  padding: 5px;
+  border: 2px solid #81969b;
+  border-radius: 31px;
+  background: #111c26;
+  box-shadow:
+    0 16px 24px #002d3680,
+    inset 0 0 0 1px #dce4e9;
+  transform-origin: 50% 80%;
+}
+
+.kp-home .kp-parent-phone.is-updates {
+  z-index: 2;
+  left: 10%;
+  transform: rotate(-5deg);
+}
+
+.kp-home .kp-parent-phone.is-messages {
+  z-index: 3;
+  left: 48%;
+  top: 44px;
+  transform: rotate(3deg);
+}
+
+.kp-home .kp-parent-phone-screen {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  padding: 0 11px;
+  border-radius: 24px;
+  background: linear-gradient(#fff, #f7fafc);
+  color: #10243e;
+}
+
+.kp-home .kp-parent-phone-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 82px;
+  height: 15px;
+  border-radius: 0 0 10px 10px;
+  background: #111c26;
+}
+
+.kp-home .kp-parent-phone-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 1px 0;
+  font-size: 7px;
+}
+
+.kp-home .kp-parent-phone-screen > h3 {
+  margin: 22px 0 12px;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -.7px;
+}
+
+.kp-home .kp-parent-phone-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 13px;
+  padding: 3px;
+  border-radius: 6px;
+  background: #edf3f6;
+}
+
+.kp-home .kp-parent-phone-tabs > span {
+  padding: 5px 7px;
+  color: #6e8193;
+  font-size: 6px;
+}
+
+.kp-home .kp-parent-phone-tabs > .is-current {
+  color: white;
+  background: #048993;
+  border-radius: 5px;
+}
+
+.kp-home .kp-parent-post-author {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.kp-home .kp-parent-post-author .kp-connected-avatar {
+  width: 25px;
+  height: 25px;
+}
+
+.kp-home .kp-parent-post-author strong,
+.kp-home .kp-parent-post-author div > span {
+  display: block;
+  font-size: 8px;
+}
+
+.kp-home .kp-parent-post-author div > span {
+  color: #8b9baa;
+  font-size: 6px;
+  margin-top: 3px;
+}
+
+.kp-home .kp-parent-post-photo {
+  width: 100%;
+  height: 89px;
+  display: block;
+  border-radius: 7px;
+  object-fit: cover;
+}
+
+.kp-home .kp-parent-post h4 {
+  margin: 10px 0 4px;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.kp-home .kp-parent-post > p {
+  margin: 0;
+  font-size: 8px;
+  line-height: 1.6;
+  color: #61778a;
+}
+
+.kp-home .kp-parent-post-reactions {
+  display: flex;
+  gap: 15px;
+  margin-top: 9px;
+}
+
+.kp-home .kp-parent-post-reactions > span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 7px;
+  color: #8da0ad;
+}
+
+.kp-home .kp-parent-post-reactions > span:first-child {
+  color: #ff438f;
+}
+
+.kp-home .kp-parent-inbox-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 0;
+  border-bottom: 1px solid #edf1f5;
+}
+
+.kp-home .kp-parent-inbox-row > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.kp-home .kp-parent-inbox-row strong {
+  display: block;
+  font-size: 7px;
+  font-weight: 750;
+}
+
+.kp-home .kp-parent-inbox-row p {
+  margin: 4px 0 0;
+  font-size: 6px;
+  line-height: 1.4;
+  color: #7f91a1;
+}
+
+.kp-home .kp-parent-inbox-row time {
+  align-self: flex-start;
+  font-size: 5px;
+  color: #9caab5;
+}
+
+.kp-home .kp-parent-inbox-icon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #44bee0;
+  color: #fff;
+  font-size: 7px;
+  font-weight: 750;
+}
+
+.kp-home .kp-parent-inbox-icon.tone-2 {
+  background: #53c7bd;
+}
+
+.kp-home .kp-parent-phone-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 4px 16px;
+  border-top: 1px solid #edf2f5;
+  background: #ffffffef;
+}
+
+.kp-home .kp-parent-phone-nav > span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: #7b8ba0;
+}
+
+.kp-home .kp-parent-phone-nav svg {
+  width: 12px;
+  height: 12px;
+}
+
+.kp-home .kp-parent-phone-nav small {
+  font-size: 5px;
+}
+
+.kp-home .kp-parent-phone-nav > .is-current {
+  color: #08a497;
+}
+
+@keyframes kp-people-enter {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes kp-people-photo-enter {
+  from { opacity: .3; }
+  to { opacity: 1; }
+}
+
+/* Tablet */
+@media (max-width: 1100px) {
+  .kp-home .kp-people-stage {
+    min-height: 460px;
+  }
+
+  .kp-home .kp-people-tabs {
+    gap: 24px;
+  }
+
+  .kp-home .kp-people-dashboard-wrap {
+    width: 95%;
+    left: -10px;
+    top: 165px;
+  }
+
+  .kp-home .kp-people-dashboard {
+    padding: 17px 13px 10px;
+  }
+
+  .kp-home .kp-parent-banner {
+    gap: 20px;
+  }
+
+  .kp-home .kp-parent-phone {
+    width: 185px;
+    height: 395px;
+  }
+
+  .kp-home .kp-parent-phone.is-updates {
+    left: 5%;
+  }
+
+  .kp-home .kp-parent-phone.is-messages {
+    left: 45%;
+  }
+
+  .kp-home .kp-parent-banner-copy {
+    padding-right: 23px;
+  }
+}
+
+@media (max-width: 850px) {
+  .kp-home .kp-people-section {
+    padding-top: 30px;
+  }
+
+  .kp-home .kp-people-stage {
+    min-height: 0;
+  }
+
+  .kp-home .kp-people-intro {
+    width: 100%;
+  }
+
+  .kp-home .kp-people-intro h2 {
+    font-size: 32px;
+  }
+
+  .kp-home .kp-people-tabs {
+    max-width: 470px;
+  }
+
+  .kp-home .kp-people-panel {
+    display: grid;
+    grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+    gap: 22px;
+    align-items: start;
+    margin-top: 25px;
+  }
+
+  .kp-home .kp-people-benefits {
+    width: 100%;
+    gap: 20px;
+    padding-top: 14px;
+  }
+
+  .kp-home .kp-people-visual {
+    position: relative;
+    inset: auto;
+    min-height: 390px;
+  }
+
+  .kp-home .kp-people-photo {
+    height: 255px;
+    border-radius: 15px;
+  }
+
+  .kp-home .kp-people-visual::after {
+    display: none;
+  }
+
+  .kp-home .kp-people-dashboard-wrap {
+    top: 155px;
+    left: 0;
+    width: 100%;
+  }
+
+  .kp-home .kp-people-metrics {
+    gap: 5px;
+  }
+
+  .kp-home .kp-people-metrics > div {
+    gap: 5px;
+  }
+
+  .kp-home .kp-people-metrics svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .kp-home .kp-parent-banner {
+    margin-top: 24px;
+    grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+    gap: 15px;
+  }
+
+  .kp-home .kp-parent-phone {
+    width: 175px;
+  }
+
+  .kp-home .kp-parent-phone.is-updates {
+    left: 1%;
+    top: 35px;
+  }
+
+  .kp-home .kp-parent-phone.is-messages {
+    left: 39%;
+    top: 66px;
+  }
+
+  .kp-home .kp-parent-banner-copy > p {
+    font-size: 13px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .kp-home .kp-people-intro h2 {
+    font-size: 28px;
+  }
+
+  .kp-home .kp-people-tabs {
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 17px;
+  }
+
+  .kp-home .kp-people-tabs button {
+    font-size: 12px;
+  }
+
+  .kp-home .kp-people-panel {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 7px;
+    margin-top: 20px;
+  }
+
+  .kp-home .kp-people-benefits {
+    padding: 0 0 17px;
+    gap: 20px;
+  }
+
+  .kp-home .kp-people-benefit p {
+    max-width: none;
+  }
+
+  .kp-home .kp-people-visual {
+    min-height: 430px;
+  }
+
+  .kp-home .kp-people-photo {
+    height: 280px;
+  }
+
+  .kp-home .kp-people-dashboard-wrap {
+    top: 175px;
+    width: 94%;
+    left: 3%;
+  }
+
+  .kp-home .kp-people-dashboard {
+    padding: 18px 14px 10px;
+  }
+
+  .kp-home .kp-people-metrics {
+    margin: 21px 0 15px;
+  }
+
+  .kp-home .kp-parent-banner {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 10px;
+    border-radius: 16px;
+  }
+
+  .kp-home .kp-parent-banner-copy {
+    order: 0;
+    padding: 27px 23px 20px;
+  }
+
+  .kp-home .kp-parent-banner-copy h2 {
+    font-size: 27px;
+  }
+
+  .kp-home .kp-parent-banner-copy > p {
+    font-size: 14px;
+  }
+
+  .kp-home .kp-parent-phones {
+    order: 1;
+    min-height: 355px;
+    width: 100%;
+    max-width: 390px;
+    align-self: center;
+  }
+
+  .kp-home .kp-parent-phone {
+    width: 180px;
+    height: 395px;
+  }
+
+  .kp-home .kp-parent-phone.is-updates {
+    top: 12px;
+    left: 7%;
+  }
+
+  .kp-home .kp-parent-phone.is-messages {
+    top: 35px;
+    left: 45%;
+  }
+}
+
+/* School stories */
+.kp-home .kp-school-proof {
+  padding: 28px 0 0;
+  scroll-margin-top: 95px;
+  color: #11233e;
+  background: linear-gradient(180deg, #fff, #fcfefe);
+}
+
+.kp-home .kp-school-proof h2 {
+  margin: 0 0 20px;
+  color: #11233e;
+  font-size: clamp(25px, 2.5vw, 35px);
+  line-height: 1.2;
+  letter-spacing: -.95px;
+  font-weight: 750;
+}
+
+.kp-home .kp-school-proof-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.kp-home .kp-school-proof-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.03fr);
+  min-height: 156px;
+  overflow: hidden;
+  border: 1px solid #e5eeee;
+  border-radius: 13px;
+  background: linear-gradient(125deg, #fff, #f8fdfc);
+  color: #11233e;
+  text-decoration: none;
+  box-shadow:
+    0 3px 8px rgba(32, 86, 83, .06),
+    0 1px 2px rgba(32, 86, 83, .025);
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease,
+    border-color .2s ease;
+}
+
+.kp-home .kp-school-proof-card:hover {
+  transform: translateY(-3px);
+  border-color: #bbded7;
+  box-shadow: 0 10px 23px rgba(32, 86, 83, .1);
+}
+
+.kp-home .kp-school-proof-card:focus-visible {
+  outline: 3px solid #10a49b;
+  outline-offset: 4px;
+}
+
+.kp-home .kp-school-proof-photo {
+  position: relative;
+  min-width: 0;
+  min-height: 156px;
+  overflow: hidden;
+  background: #e6f2ed;
+}
+
+.kp-home .kp-school-proof-photo img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .35s ease;
+}
+
+.kp-home .kp-school-proof-card:hover .kp-school-proof-photo img {
+  transform: scale(1.04);
+}
+
+.kp-home .kp-school-proof-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  padding: 15px 13px 12px;
+}
+
+.kp-home .kp-school-proof-brand {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 31px;
+  margin-bottom: 10px;
+}
+
+.kp-home .kp-school-proof-brand img {
+  display: block;
+  width: 29px;
+  height: 31px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.kp-home .kp-school-proof-brand > span {
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.25;
+  letter-spacing: -.15px;
+}
+
+.kp-home .kp-school-proof-copy h3 {
+  margin: 0 0 12px;
+  color: #11233e;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.45;
+  letter-spacing: -.25px;
+}
+
+.kp-home .kp-school-proof-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: auto;
+  color: #269b96;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.kp-home .kp-school-proof-link svg {
+  flex-shrink: 0;
+  transition: transform .2s ease;
+}
+
+.kp-home .kp-school-proof-card:hover .kp-school-proof-link svg {
+  transform: translateX(3px);
+}
+
+/* Integration row */
+.kp-home .kp-tools-strip {
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) minmax(0, 1.35fr);
+  align-items: center;
+  gap: 30px;
+  margin-top: 26px;
+  padding-bottom: 23px;
+  border-bottom: 1px solid #e5eeee;
+}
+
+.kp-home .kp-tools-copy h3 {
+  margin: 0 0 6px;
+  color: #172c44;
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1.3;
+  letter-spacing: -.45px;
+}
+
+.kp-home .kp-tools-copy p {
+  margin: 0;
+  color: #738796;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.kp-home .kp-tools-brands {
+  display: grid;
+  grid-template-columns: .9fr .85fr 1.15fr 1fr;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.kp-home .kp-tools-brands > li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+  padding: 0 15px;
+  min-height: 30px;
+}
+
+.kp-home .kp-tools-brands > li + li {
+  border-left: 1px solid #dce5eb;
+}
+
+.kp-home .kp-tools-zoom {
+  font-family: Arial, sans-serif;
+  font-size: 29px;
+  font-weight: 600;
+  letter-spacing: -1.7px;
+  line-height: 1;
+  color: #2d8cff;
+}
+
+.kp-home .kp-tools-stripe {
+  font-family: Arial, sans-serif;
+  font-size: 27px;
+  font-weight: 900;
+  letter-spacing: -1.3px;
+  line-height: 1;
+  color: #17143b;
+}
+
+.kp-home .kp-tools-openapply,
+.kp-home .kp-tools-wonde {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.kp-home .kp-tools-openapply {
+  color: #008b85;
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -.7px;
+}
+
+.kp-home .kp-tools-openapply svg {
+  flex-shrink: 0;
+}
+
+.kp-home .kp-tools-wonde {
+  color: #1d214a;
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -.9px;
+}
+
+.kp-home .kp-tools-wonde-mark {
+  display: inline-flex;
+  color: #286bff;
+}
+
+/* Four-step onboarding */
+.kp-home .kp-start-path {
+  padding: 20px 0 25px;
+  background: #fcfefe;
+  color: #11233e;
+}
+
+.kp-home .kp-start-path h2 {
+  margin: 0 0 23px;
+  font-size: 21px;
+  font-weight: 750;
+  letter-spacing: -.55px;
+  line-height: 1.3;
+  color: #11233e;
+}
+
+.kp-home .kp-start-path-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 35px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kp-home .kp-start-path-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+}
+
+.kp-home .kp-start-path-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: -22px;
+  top: 17px;
+  width: 10px;
+  height: 2px;
+  border-radius: 2px;
+  background: #dea8be;
+}
+
+.kp-home .kp-start-path-number {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(135deg, #ff72ae, #ff428f);
+  box-shadow:
+    inset 0 1px 1px #ffffff66,
+    0 3px 8px #fa498d12;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.kp-home .kp-start-path-step h3 {
+  margin: 4px 0 7px;
+  color: #17304b;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.3;
+}
+
+.kp-home .kp-start-path-step p {
+  margin: 0;
+  color: #6d8292;
+  font-size: 12px;
+  line-height: 1.6;
+  max-width: 185px;
+}
+
+/* Compact privacy strip */
+.kp-home .kp-privacy-strip {
+  padding: 20px 0 29px;
+  background: linear-gradient(180deg, #fcfefe, #f6fcfa);
+}
+
+.kp-home .kp-privacy-strip-inner {
+  display: grid;
+  grid-template-columns: minmax(0, .92fr) minmax(0, 1.35fr);
+  align-items: center;
+  gap: 28px;
+}
+
+.kp-home .kp-privacy-strip h2 {
+  margin: 0;
+  color: #17424d;
+  font-size: 19px;
+  font-weight: 550;
+  line-height: 1.4;
+  letter-spacing: -.5px;
+}
+
+.kp-home .kp-privacy-strip h2 > span {
+  color: #19a49b;
+}
+
+.kp-home .kp-privacy-items {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.kp-home .kp-privacy-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  padding: 3px 15px;
+}
+
+.kp-home .kp-privacy-item + .kp-privacy-item {
+  border-left: 1px solid #d6e3e5;
+}
+
+.kp-home .kp-privacy-item > svg {
+  flex-shrink: 0;
+  color: #24a5a4;
+}
+
+.kp-home .kp-privacy-item.is-blue > svg {
+  color: #76afbe;
+}
+
+.kp-home .kp-privacy-item.is-green > svg {
+  color: #20bd80;
+}
+
+.kp-home .kp-privacy-item h3 {
+  margin: 0 0 5px;
+  color: #354e63;
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.3;
+}
+
+.kp-home .kp-privacy-item p {
+  margin: 0;
+  color: #78909d;
+  font-size: 8px;
+  line-height: 1.5;
+}
+
+/* Tablet */
+@media (max-width: 1100px) {
+  .kp-home .kp-school-proof-grid {
+    gap: 14px;
+  }
+
+  .kp-home .kp-school-proof-card {
+    grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+  }
+
+  .kp-home .kp-school-proof-copy {
+    padding: 12px 10px;
+  }
+
+  .kp-home .kp-school-proof-copy h3 {
+    font-size: 12px;
+  }
+
+  .kp-home .kp-school-proof-brand {
+    gap: 5px;
+  }
+
+  .kp-home .kp-school-proof-brand img {
+    width: 25px;
+    height: 28px;
+  }
+
+  .kp-home .kp-tools-strip {
+    gap: 20px;
+  }
+
+  .kp-home .kp-tools-brands > li {
+    padding-inline: 10px;
+  }
+
+  .kp-home .kp-tools-openapply {
+    font-size: 14px;
+  }
+
+  .kp-home .kp-tools-wonde {
+    font-size: 20px;
+  }
+
+  .kp-home .kp-start-path-grid {
+    gap: 25px;
+  }
+
+  .kp-home .kp-start-path-step {
+    gap: 9px;
+  }
+
+  .kp-home .kp-start-path-step:not(:last-child)::after {
+    right: -17px;
+    width: 8px;
+  }
+
+  .kp-home .kp-privacy-strip-inner {
+    gap: 18px;
+    grid-template-columns: minmax(0, .8fr) minmax(0, 1.3fr);
+  }
+
+  .kp-home .kp-privacy-item {
+    gap: 7px;
+    padding-inline: 10px;
+  }
+}
+
+@media (max-width: 850px) {
+  .kp-home .kp-school-proof-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .kp-home .kp-school-proof-photo {
+    min-height: 140px;
+  }
+
+  .kp-home .kp-school-proof-copy {
+    padding: 15px;
+  }
+
+  .kp-home .kp-school-proof-copy h3 {
+    font-size: 13px;
+  }
+
+  .kp-home .kp-tools-strip {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .kp-home .kp-tools-brands {
+    max-width: 630px;
+    width: 100%;
+  }
+
+  .kp-home .kp-tools-brands > li:first-child {
+    justify-content: flex-start;
+    padding-left: 0;
+  }
+
+  .kp-home .kp-start-path-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 40px;
+  }
+
+  .kp-home .kp-start-path-step::after {
+    display: none;
+  }
+
+  .kp-home .kp-start-path-step p {
+    max-width: 240px;
+  }
+
+  .kp-home .kp-privacy-strip-inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+
+  .kp-home .kp-privacy-item:first-child {
+    padding-left: 0;
+  }
+
+  .kp-home .kp-privacy-item h3 {
+    font-size: 11px;
+  }
+
+  .kp-home .kp-privacy-item p {
+    font-size: 9px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .kp-home .kp-school-proof {
+    padding-top: 24px;
+  }
+
+  .kp-home .kp-school-proof h2 {
+    font-size: 27px;
+    line-height: 1.2;
+  }
+
+  .kp-home .kp-school-proof-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .kp-home .kp-school-proof-card {
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    min-height: 155px;
+  }
+
+  .kp-home .kp-school-proof-photo {
+    min-height: 155px;
+  }
+
+  .kp-home .kp-school-proof-brand > span {
+    font-size: 11px;
+  }
+
+  .kp-home .kp-school-proof-copy h3 {
+    font-size: 14px;
+  }
+
+  .kp-home .kp-school-proof-link {
+    font-size: 11px;
+  }
+
+  .kp-home .kp-tools-copy h3 {
+    font-size: 17px;
+  }
+
+  .kp-home .kp-tools-brands {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 22px;
+  }
+
+  .kp-home .kp-tools-brands > li {
+    justify-content: center;
+    min-height: 32px;
+  }
+
+  .kp-home .kp-tools-brands > li:first-child {
+    justify-content: center;
+    padding-left: 10px;
+  }
+
+  .kp-home .kp-tools-brands > li:nth-child(3) {
+    border-left: 0;
+  }
+
+  .kp-home .kp-tools-openapply {
+    font-size: 17px;
+  }
+
+  .kp-home .kp-tools-wonde {
+    font-size: 23px;
+  }
+
+  .kp-home .kp-start-path {
+    padding-top: 23px;
+    padding-bottom: 17px;
+  }
+
+  .kp-home .kp-start-path h2 {
+    font-size: 21px;
+    line-height: 1.35;
+  }
+
+  .kp-home .kp-start-path-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+
+  .kp-home .kp-start-path-step {
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 13px;
+  }
+
+  .kp-home .kp-start-path-step h3 {
+    font-size: 14px;
+  }
+
+  .kp-home .kp-start-path-step p {
+    max-width: none;
+    font-size: 12px;
+  }
+
+  .kp-home .kp-privacy-strip {
+    padding-top: 19px;
+  }
+
+  .kp-home .kp-privacy-strip h2 {
+    font-size: 21px;
+    max-width: 320px;
+  }
+
+  .kp-home .kp-privacy-items {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 15px;
+  }
+
+  .kp-home .kp-privacy-item {
+    padding: 0;
+    gap: 13px;
+  }
+
+  .kp-home .kp-privacy-item + .kp-privacy-item {
+    border-left: 0;
+  }
+
+  .kp-home .kp-privacy-item h3 {
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+
+  .kp-home .kp-privacy-item p {
+    font-size: 10px;
+  }
+}
+/* FAQ refresh */
+.kp-home .kp-faq-refresh {
+  padding: 28px 0 20px;
+  background: #fff;
+  color: #10223c;
+}
+
+.kp-home .kp-faq-refresh-grid {
+  display: grid;
+  grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr);
+  gap: 42px;
+  align-items: start;
+}
+
+.kp-home .kp-faq-refresh h2 {
+  margin: 0;
+  max-width: 355px;
+  color: #10223c;
+  font-size: clamp(22px, 2.2vw, 31px);
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -.8px;
+}
+
+.kp-home .kp-faq-refresh-items {
+  border-top: 1px solid #e6edef;
+}
+
+.kp-home .kp-faq-refresh-items details {
+  border-bottom: 1px solid #e6edef;
+}
+
+.kp-home .kp-faq-refresh-items summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 43px;
+  padding: 9px 4px 9px 12px;
+  color: #304b63;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  list-style: none;
+  cursor: pointer;
+}
+
+.kp-home .kp-faq-refresh-items summary::-webkit-details-marker {
+  display: none;
+}
+
+.kp-home .kp-faq-refresh-items summary svg {
+  flex-shrink: 0;
+  color: #6d8292;
+  transition: transform .2s ease;
+}
+
+.kp-home .kp-faq-refresh-items details[open] summary {
+  color: #0a9b94;
+}
+
+.kp-home .kp-faq-refresh-items details[open] summary svg {
+  transform: rotate(45deg);
+}
+
+.kp-home .kp-faq-refresh-items details p {
+  margin: 0;
+  max-width: 650px;
+  padding: 0 42px 14px 12px;
+  color: #6e8492;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+/* Final CTA */
+.kp-home .kp-final-refresh-wrap {
+  padding: 0 0 0;
+  background: #fff;
+}
+
+.kp-home .kp-final-refresh {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 112px;
+  overflow: hidden;
+  border-radius: 10px 10px 0 0;
+  background:
+    radial-gradient(
+      ellipse at 85% 45%,
+      rgba(255, 169, 200, .52),
+      transparent 47%
+    ),
+    linear-gradient(105deg, #e8faf7, #fff3f6 100%);
+}
+
+.kp-home .kp-final-refresh-copy {
+  position: relative;
+  z-index: 2;
+  padding: 19px 32px;
+}
+
+.kp-home .kp-final-refresh-copy h2 {
+  margin: 0 0 5px;
+  color: #10243d;
+  font-size: clamp(22px, 2.3vw, 31px);
+  font-weight: 750;
+  line-height: 1.15;
+  letter-spacing: -.8px;
+}
+
+.kp-home .kp-final-refresh-copy h2 span {
+  color: #0c9992;
+}
+
+.kp-home .kp-final-refresh-copy p {
+  margin: 0 0 13px;
+  color: #5d7482;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.kp-home .kp-final-refresh-copy .kp-button {
+  min-height: 34px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 9px;
+  gap: 8px;
+}
+
+.kp-home .kp-final-refresh-photo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30%;
+  height: 100%;
+  overflow: hidden;
+  opacity: .96;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 32%);
+}
+
+.kp-home .kp-final-refresh-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 242, 246, .95),
+    rgba(255, 205, 220, .08)
+  );
+}
+
+.kp-home .kp-final-refresh-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+/* Footer */
+.kp-home .kp-footer-refresh {
+  padding: 23px 0 27px;
+  border-top: 1px solid #e8eef0;
+  background: #fff;
+  color: #10223c;
+}
+
+.kp-home .kp-footer-refresh-grid {
+  display: grid;
+  grid-template-columns: 1.55fr repeat(4, .8fr) 1.05fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.kp-home .kp-footer-refresh-brand .kp-logo img {
+  width: 135px;
+  height: 32px;
+}
+
+.kp-home .kp-footer-refresh-brand > p {
+  margin: 10px 0 0;
+  color: #718692;
+  font-size: 9px;
+  line-height: 1.6;
+}
+
+.kp-home .kp-footer-refresh-column {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kp-home .kp-footer-refresh-column h3 {
+  margin: 0 0 4px;
+  color: #17334d;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.kp-home .kp-footer-refresh-column a {
+  color: #718592;
+  font-size: 9px;
+  line-height: 1.35;
+  text-decoration: none;
+}
+
+.kp-home .kp-footer-refresh-column a:hover {
+  color: #0a9b94;
+}
+
+.kp-home .kp-footer-refresh-social {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 0;
+}
+
+.kp-home .kp-footer-refresh-social > div {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.kp-home .kp-footer-refresh-social > div a {
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  color: #122943;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.kp-home .kp-footer-refresh-social > div a:hover {
+  color: #0a9b94;
+}
+
+.kp-home .kp-footer-refresh-social p {
+  margin: 28px 0 0;
+  color: #7b8c98;
+  font-size: 8px;
+  line-height: 1.45;
+  text-align: right;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+  .kp-home .kp-footer-refresh-grid {
+    grid-template-columns: 1.3fr repeat(3, 1fr);
+  }
+
+  .kp-home .kp-footer-refresh-grid > .kp-footer-refresh-column:nth-of-type(4),
+  .kp-home .kp-footer-refresh-grid > .kp-footer-refresh-social {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 750px) {
+  .kp-home .kp-faq-refresh-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .kp-home .kp-faq-refresh h2 {
+    max-width: none;
+  }
+
+  .kp-home .kp-final-refresh-photo {
+    width: 38%;
+  }
+
+  .kp-home .kp-footer-refresh-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 25px 18px;
+  }
+
+  .kp-home .kp-footer-refresh-brand {
+    grid-column: 1 / -1;
+  }
+
+  .kp-home .kp-footer-refresh-social {
+    align-items: flex-start;
+  }
+
+  .kp-home .kp-footer-refresh-social p {
+    text-align: left;
+  }
+}
+
+@media (max-width: 520px) {
+  .kp-home .kp-faq-refresh {
+    padding-top: 23px;
+  }
+
+  .kp-home .kp-faq-refresh h2 {
+    font-size: 25px;
+  }
+
+  .kp-home .kp-faq-refresh-items summary {
+    min-height: 46px;
+    font-size: 11px;
+  }
+
+  .kp-home .kp-final-refresh {
+    min-height: 145px;
+  }
+
+  .kp-home .kp-final-refresh-copy {
+    max-width: 76%;
+    padding: 21px 18px;
+  }
+
+  .kp-home .kp-final-refresh-copy h2 {
+    font-size: 24px;
+  }
+
+  .kp-home .kp-final-refresh-photo {
+    width: 47%;
+  }
+
+  .kp-home .kp-footer-refresh-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kp-home .kp-footer-refresh-brand {
+    grid-column: 1 / -1;
+  }
+
+  .kp-home .kp-footer-refresh-social {
+    grid-column: 1 / -1;
+    align-items: flex-start;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .kp-home *, .kp-home *::before, .kp-home *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
