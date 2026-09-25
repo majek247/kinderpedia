@@ -17,7 +17,6 @@ import {
  * Each of those ships its own markup and scoped CSS.
  */
 const OFFICIAL = 'https://www.kinderpedia.co'
-const LOGO = `${OFFICIAL}/images/kp/logo_kp_mobile.svg`
 
 function Action({ children = 'Book a free demo', to = '/demo', secondary = false, className = '' }) {
   const classes = `kp-button ${secondary ? 'kp-button-secondary' : 'kp-button-primary'} ${className}`
@@ -27,11 +26,31 @@ function Action({ children = 'Book a free demo', to = '/demo', secondary = false
     : <Link className={classes} to={to}>{content}</Link>
 }
 
-function Logo() {
-  const [failed, setFailed] = useState(false)
-  return <a className="kp-logo" href={OFFICIAL} aria-label="Kinderpedia homepage">
-    {failed ? <span>kinder<em>pedia</em></span> : <img src={LOGO} width="172" height="40" alt="Kinderpedia" onError={() => setFailed(true)} />}
-  </a>
+/* Inline SVG-style logo — matches the App.jsx header mark */
+function KpMark({ size = 32 }) {
+  return (
+    <span
+      className="kp-logo-mark"
+      style={{ width: size, height: size }}
+      aria-hidden="true"
+    >
+      <span className="kp-mark-leaf-a" />
+      <span className="kp-mark-leaf-b" />
+      <span className="kp-mark-leaf-c" />
+      <span className="kp-mark-stem" />
+    </span>
+  )
+}
+
+function Logo({ compact = false }) {
+  return (
+    <a className="kp-logo" href={OFFICIAL} aria-label="Kinderpedia homepage">
+      <KpMark size={compact ? 26 : 32} />
+      <span className="kp-logo-word">
+        kinder<span>pedia</span>
+      </span>
+    </a>
+  )
 }
 
 function Header({ demoTo }) {
@@ -180,66 +199,120 @@ function TrustStrip() {
 }
 
 function Footer() {
+  const offices = [
+    {
+      region: 'Brazil',
+      lines: ['Av. Dr. Mário Vilas Boas Rodrigues', 'São Paulo - SP, 04723-000, BR'],
+    },
+    {
+      region: 'Portugal',
+      lines: ['Av. Infante Dom Henrique 143,', '1950-406 Lisboa, PT'],
+    },
+    {
+      region: 'Romania',
+      lines: ['46-48 Calea Plevnei', '010233 Bucharest, RO'],
+    },
+    {
+      region: 'Switzerland',
+      lines: ['Langgasse 47c', '6340 Baar, CH'],
+    },
+    {
+      region: 'United Arab Emirates',
+      lines: ['Al Khatem Tower, Al Maryah Island', 'Abu Dhabi, UAE'],
+    },
+    {
+      region: 'United Kingdom',
+      lines: ['30 Churchill Pl, Canary Wharf', 'London E14 5RE, UK'],
+    },
+  ]
+
+  const legal = [
+    ['Privacy Policy', '/en/privacy-policy'],
+    ['Terms of Service', '/en/terms-of-service'],
+    ['Cookie Policy', '/en/cookie-policy'],
+  ]
+
+  const socials = [
+    ['f', 'https://www.facebook.com', 'Facebook'],
+    ['𝕏', 'https://www.x.com', 'X'],
+    ['in', 'https://www.linkedin.com', 'LinkedIn'],
+    ['◎', 'https://www.instagram.com', 'Instagram'],
+    ['▶', 'https://www.youtube.com', 'YouTube'],
+  ]
+
   return (
     <footer className="kp-footer-refresh">
       <div className="kp-container">
-        <div className="kp-footer-refresh-grid">
-          <div className="kp-footer-refresh-brand">
-            <Logo />
 
-            <p>
-              School management software
-              <br />
-              for a brighter tomorrow.
-            </p>
+        {/* ── TOP: brand + legal | offices | connect ─── */}
+        <div className="kp-footer-top">
+
+          {/* Brand + legal links */}
+          <div className="kp-footer-brand-col">
+            <Logo compact />
+
+            <ul className="kp-footer-legal">
+              {legal.map(([label, path]) => (
+                <li key={label}>
+                  <a
+                    href={`${OFFICIAL}${path}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div className="kp-footer-refresh-column">
-            <h3>Platform</h3>
-            <a href="#kp-platform">Overview</a>
-            <a href="#kp-platform">All modules</a>
-            <a href={`${OFFICIAL}/en/integrations`}>Integrations</a>
-            <a href={`${OFFICIAL}/en/security`}>Security</a>
+          {/* Office locations */}
+          <div className="kp-footer-offices">
+            {offices.map(({ region, lines }) => (
+              <div className="kp-footer-office" key={region}>
+                <h4>{region}</h4>
+                {lines.map((line) => (
+                  <p key={line}>{line}</p>
+                ))}
+              </div>
+            ))}
           </div>
 
-          <div className="kp-footer-refresh-column">
-            <h3>Solutions</h3>
-            <a href={`${OFFICIAL}/en/solutions/schools`}>For schools</a>
-            <a href={`${OFFICIAL}/en/solutions/preschool`}>For preschools</a>
-            <a href={`${OFFICIAL}/en/solutions/education-franchises`}>For education groups</a>
-            <a href={`${OFFICIAL}/en/features/multi-location-management`}>Multi-campus</a>
-          </div>
+          {/* Connect with us */}
+          <div className="kp-footer-connect">
+            <h3>Connect with us</h3>
 
-          <div className="kp-footer-refresh-column">
-            <h3>Resources</h3>
-            <a href={`${OFFICIAL}/en/blog`}>Blog</a>
-            <a href={`${OFFICIAL}/en/resources/guides`}>Guides</a>
-            <a href={`${OFFICIAL}/en/webinars`}>Webinars</a>
-            <a href={`${OFFICIAL}/en/contact`}>Help centre</a>
-          </div>
-
-          <div className="kp-footer-refresh-column">
-            <h3>Company</h3>
-            <a href={`${OFFICIAL}/en/company/about`}>About us</a>
-            <a href={`${OFFICIAL}/en/company/careers`}>Careers</a>
-            <a href={`${OFFICIAL}/en/contact`}>Contact</a>
-            <a href={`${OFFICIAL}/en/get-a-price`} target="_blank" rel="noopener noreferrer">Pricing</a>
-          </div>
-
-          <div className="kp-footer-refresh-social">
-            <div>
-              <a href="https://www.linkedin.com" aria-label="LinkedIn">in</a>
-              <a href="https://www.instagram.com" aria-label="Instagram">◎</a>
-              <a href="https://www.youtube.com" aria-label="YouTube">▶</a>
+            <div className="kp-footer-socials">
+              {socials.map(([glyph, href, label]) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                >
+                  {glyph}
+                </a>
+              ))}
             </div>
 
-            <p>
-              Homepage design concept
-              <br />
-              for Kinderpedia © 2027
-            </p>
+            <a
+              className="kp-footer-demo"
+              href={`${OFFICIAL}/en/book-a-demo`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Book a free demo
+            </a>
           </div>
         </div>
+
+        {/* ── BOTTOM: copyright ──────────────────────── */}
+        <div className="kp-footer-bottom">
+          <p>© {new Date().getFullYear()} Kinderpedia. All rights reserved.</p>
+          <p>School management software for a brighter tomorrow.</p>
+        </div>
+
       </div>
     </footer>
   )
@@ -307,6 +380,71 @@ const styles = `
 .kp-home .kp-button-secondary { border-color: #dbdce4; background: #fff; color: var(--kp-slate); }
 .kp-home .kp-button-secondary:hover { border-color: #c48197; background: #fff9fb; transform: translateY(-2px); }
 
+/* ============ LOGO (inline mark matching App.jsx) ============ */
+.kp-home .kp-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+.kp-home .kp-logo-mark {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.kp-home .kp-logo-mark > span {
+  position: absolute;
+  display: block;
+}
+.kp-home .kp-mark-leaf-a {
+  left: 9%;
+  top: 22%;
+  width: 31%;
+  height: 41%;
+  transform: rotate(-34deg);
+  border-radius: 80% 25% 75% 25%;
+  background: #087fba;
+}
+.kp-home .kp-mark-leaf-b {
+  right: 9%;
+  top: 22%;
+  width: 31%;
+  height: 41%;
+  transform: rotate(34deg);
+  border-radius: 25% 80% 25% 75%;
+  background: #14a995;
+}
+.kp-home .kp-mark-leaf-c {
+  left: 28%;
+  top: 50%;
+  width: 31%;
+  height: 34%;
+  transform: rotate(28deg);
+  border-radius: 75% 25% 75% 25%;
+  background: #f0448c;
+}
+.kp-home .kp-mark-stem {
+  left: 44%;
+  top: 31%;
+  width: 9%;
+  height: 38%;
+  border-radius: 999px;
+  background: #17324d;
+}
+.kp-home .kp-logo-word {
+  font-family: 'Fredoka', system-ui, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.07em;
+  color: #17324d;
+  line-height: 1;
+}
+.kp-home .kp-logo-word > span {
+  color: #ed438b;
+  font-weight: 500;
+}
+
 /* ============ HEADER ============ */
 .kp-home .kp-header { background: #fffffff5; border-bottom: 1px solid #eeedf2; position: sticky; top: 0; z-index: 30; backdrop-filter: blur(16px); }
 .kp-home .kp-header-inner { 
@@ -319,10 +457,6 @@ const styles = `
   width: min(1280px, calc(100% - 80px));
   margin-inline: auto;
 }
-.kp-home .kp-logo { display: inline-flex; align-items: center; flex-shrink: 0; }
-.kp-home .kp-logo img { width: 166px; height: 40px; object-fit: contain; }
-.kp-home .kp-logo > span { font-size: 29px; font-weight: 800; font-style: italic; letter-spacing: -1.6px; }
-.kp-home .kp-logo em { color: var(--kp-berry); font-weight: 500; }
 .kp-home .kp-nav { display: flex; gap: 27px; align-items: center; }
 .kp-home .kp-nav > a:not(.kp-button) { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; }
 .kp-home .kp-nav > a:not(.kp-button):hover { color: var(--kp-berry); }
@@ -659,84 +793,165 @@ const styles = `
 
 /* ============ FOOTER ============ */
 .kp-home .kp-footer-refresh {
-  padding: 23px 0 27px;
+  padding: 64px 0 32px;
   border-top: 1px solid #e8eef0;
   background: #fff;
   color: #10223c;
 }
 
-.kp-home .kp-footer-refresh-grid {
+/* ---- TOP: brand+legal | offices | connect ---- */
+.kp-home .kp-footer-top {
   display: grid;
-  grid-template-columns: 1.55fr repeat(4, .8fr) 1.05fr;
-  gap: 24px;
-  align-items: start;
+  grid-template-columns: 1fr 2.4fr 1fr;
+  gap: 56px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid #eef3f5;
 }
 
-.kp-home .kp-footer-refresh-brand .kp-logo img { width: 135px; height: 32px; }
-
-.kp-home .kp-footer-refresh-brand > p {
-  margin: 10px 0 0;
-  color: #718692;
-  font-size: 9px;
-  line-height: 1.6;
-}
-
-.kp-home .kp-footer-refresh-column {
+/* ---- Brand column ---- */
+.kp-home .kp-footer-brand-col {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-
-.kp-home .kp-footer-refresh-column h3 {
-  margin: 0 0 4px;
-  color: #17334d;
-  font-size: 10px;
-  font-weight: 750;
-}
-
-.kp-home .kp-footer-refresh-column a {
-  color: #718592;
-  font-size: 9px;
-  line-height: 1.35;
-  text-decoration: none;
-}
-
-.kp-home .kp-footer-refresh-column a:hover { color: #0a9b94; }
-
-.kp-home .kp-footer-refresh-social {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  gap: 32px;
   min-width: 0;
 }
 
-.kp-home .kp-footer-refresh-social > div {
+.kp-home .kp-footer-brand-col .kp-logo-word { font-size: 26px; }
+.kp-home .kp-footer-brand-col .kp-logo-mark { width: 34px !important; height: 34px !important; }
+
+.kp-home .kp-footer-legal {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
-  gap: 15px;
-  align-items: center;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.kp-home .kp-footer-refresh-social > div a {
+.kp-home .kp-footer-legal a {
+  color: #b93360;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: color .18s ease;
+}
+
+.kp-home .kp-footer-legal a:hover { color: #0a9b94; }
+
+/* ---- Offices grid ---- */
+.kp-home .kp-footer-offices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px 40px;
+  align-content: start;
+}
+
+.kp-home .kp-footer-office h4 {
+  margin: 0 0 10px;
+  color: #b93360;
+  font-family: 'Fredoka', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.kp-home .kp-footer-office p {
+  margin: 0;
+  color: #4a5a6b;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.55;
+  font-weight: 500;
+}
+
+/* ---- Connect column ---- */
+.kp-home .kp-footer-connect {
+  display: flex;
+  flex-direction: column;
+  justify-self: end;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.kp-home .kp-footer-connect h3 {
+  margin: 0 0 22px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid #b93360;
+  display: inline-block;
+  color: #17334d;
+  font-family: 'Fredoka', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.kp-home .kp-footer-socials {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-bottom: 28px;
+}
+
+.kp-home .kp-footer-socials a {
   display: grid;
   place-items: center;
-  width: 17px;
-  height: 17px;
-  color: #122943;
+  width: 30px;
+  height: 30px;
+  color: #b93360;
   font-family: Arial, sans-serif;
-  font-size: 11px;
-  font-weight: 750;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
   text-decoration: none;
+  transition: color .18s ease, transform .18s ease;
 }
 
-.kp-home .kp-footer-refresh-social > div a:hover { color: #0a9b94; }
+.kp-home .kp-footer-socials a:hover {
+  color: #0a9b94;
+  transform: translateY(-2px);
+}
 
-.kp-home .kp-footer-refresh-social p {
-  margin: 28px 0 0;
+.kp-home .kp-footer-demo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: 14px 28px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0fb5a8, #0a8a80);
+  color: #fff;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: transform .2s, background .2s;
+}
+
+.kp-home .kp-footer-demo:hover {
+  background: linear-gradient(135deg, #0a8a80, #076e66);
+  transform: translateY(-2px);
+}
+
+/* ---- BOTTOM: copyright ---- */
+.kp-home .kp-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding-top: 28px;
   color: #7b8c98;
-  font-size: 8px;
-  line-height: 1.45;
-  text-align: right;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
 }
+
+.kp-home .kp-footer-bottom p { margin: 0; }
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 1100px) {
@@ -762,13 +977,24 @@ const styles = `
   .kp-home .kp-connected-stat strong { font-size: 20px; }
   .kp-home .kp-connected-school { padding-inline: 10px; }
 
-  .kp-home .kp-footer-refresh-grid { grid-template-columns: 1.3fr repeat(3, 1fr); }
-  .kp-home .kp-footer-refresh-grid > .kp-footer-refresh-column:nth-of-type(4),
-  .kp-home .kp-footer-refresh-grid > .kp-footer-refresh-social { grid-column: span 1; }
+  .kp-home .kp-footer-top {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .kp-home .kp-footer-connect {
+    justify-self: start;
+  }
+
+  .kp-home .kp-footer-offices {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 1000px) {
-  .kp-home .kp-footer-refresh-grid { grid-template-columns: 1.3fr repeat(3, 1fr); }
+  .kp-home .kp-footer-offices {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 850px) {
@@ -803,14 +1029,28 @@ const styles = `
   .kp-home .kp-connected-stat { grid-column: span 4; }
   .kp-home .kp-connected-school { grid-column: span 3; }
   .kp-home .kp-connected-trust-inner > :nth-child(4) { border-left: 0; }
+}
 
-  .kp-home .kp-footer-refresh-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 25px 18px;
+@media (max-width: 700px) {
+  .kp-home .kp-footer-refresh { padding: 48px 0 24px; }
+
+  .kp-home .kp-footer-top {
+    gap: 32px;
+    padding-bottom: 36px;
   }
-  .kp-home .kp-footer-refresh-brand { grid-column: 1 / -1; }
-  .kp-home .kp-footer-refresh-social { align-items: flex-start; }
-  .kp-home .kp-footer-refresh-social p { text-align: left; }
+
+  .kp-home .kp-footer-offices {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .kp-home .kp-footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding-top: 24px;
+    font-size: 11px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -838,16 +1078,6 @@ const styles = `
   .kp-home .kp-connected-school { padding-inline: 7px; }
   .kp-home .kp-connected-school img { height: 45px; }
   .kp-home .kp-connected-school > strong { font-size: 10px; }
-
-  .kp-home .kp-footer-refresh-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .kp-home .kp-footer-refresh-brand { grid-column: 1 / -1; }
-  .kp-home .kp-footer-refresh-social { grid-column: 1 / -1; align-items: flex-start; }
-}
-
-@media (max-width: 520px) {
-  .kp-home .kp-footer-refresh-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .kp-home .kp-footer-refresh-brand { grid-column: 1 / -1; }
-  .kp-home .kp-footer-refresh-social { grid-column: 1 / -1; align-items: flex-start; }
 }
 
 @media (prefers-reduced-motion: reduce) {

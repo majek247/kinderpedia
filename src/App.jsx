@@ -129,7 +129,7 @@ function MobileNavigation({ open, setOpen }) {
         <Link
           to="/demo"
           onClick={() => setOpen(false)}
-          className="mt-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#079b93] px-5 text-sm font-bold text-white shadow-[0_8px_18px_rgba(7,155,147,0.2)]"
+          className="mt-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#079b93] px-5 text-sm font-bold text-white"
         >
           Book a free demo
           <ArrowRight size={16} />
@@ -176,7 +176,7 @@ function Header() {
 
           <Link
             to="/demo"
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#079b93] px-5 text-[12px] font-bold text-white shadow-[0_8px_18px_rgba(7,155,147,0.2)] transition hover:-translate-y-0.5 hover:bg-[#067e79]"
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#079b93] px-5 text-[12px] font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#067e79]"
           >
             Book a demo
             <ArrowRight size={15} />
