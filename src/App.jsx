@@ -161,7 +161,7 @@ function Header() {
       data-site-header
       className="sticky top-0 z-50 border-b border-[#dcebe8] bg-[#f8fdfc]/95 backdrop-blur-xl"
     >
-      <div className="mx-auto flex min-h-[72px] w-full max-w-[1280px] items-center justify-between gap-6 px-5 sm:px-8 lg:px-10">
+      <div className="mx-auto flex min-h-[72px] w-[min(1280px,calc(100%-80px))] items-center justify-between gap-6">
         <Logo />
 
         <DesktopNavigation />
