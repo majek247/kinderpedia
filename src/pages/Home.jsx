@@ -66,25 +66,20 @@ function Hero({ demoTo }) {
     >
       <div className="kp-container kp-hero-grid">
         <div className="kp-hero-copy">
-                   <span className="kp-eyebrow">
+          <span className="kp-eyebrow kp-anim kp-anim-1">
             AI-POWERED SCHOOL MANAGEMENT SOFTWARE
           </span>
 
-
-
-          <h1 id="kp-hero-title">
-             Run Your School Day in<br />
+          <h1 id="kp-hero-title" className="kp-anim kp-anim-2">
+            Run Your School Day in<br />
             <span>9 Fewer Hours a Week.</span>
           </h1>
 
-       
-
-
-          <p className="kp-hero-description">
+          <p className="kp-hero-description kp-anim kp-anim-3">
             Manage daily school operations, learning and parent communication in one place, with less admin and fewer repetitive tasks.
           </p>
 
-          <div className="kp-actions">
+          <div className="kp-actions kp-anim kp-anim-4">
             <Action to={demoTo}>Book a free demo</Action>
 
             <a
@@ -98,12 +93,12 @@ function Hero({ demoTo }) {
             </a>
           </div>
 
-          <p className="kp-hero-audience">
+          <p className="kp-hero-audience kp-anim kp-anim-5">
             For schools, preschools and education groups.
           </p>
         </div>
 
-        <div className="kp-hero-artwork">
+        <div className="kp-hero-artwork kp-anim kp-anim-artwork">
           <img
             src="/images/kinderpediaheroimage.png"
             alt="Kinderpedia school dashboard alongside the parent mobile app."
@@ -473,6 +468,112 @@ const styles = `
   border-radius: 16px;
 }
 
+/* ============ HERO PAGE-LOAD ANIMATIONS ============ */
+@keyframes kpFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kpFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes kpArtworkIn {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes kpEyebrowIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+    letter-spacing: 0.3em;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    letter-spacing: 0.12em;
+  }
+}
+
+@keyframes kpButtonIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.kp-home .kp-anim {
+  opacity: 0;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-duration: 0.8s;
+}
+
+.kp-home .kp-anim-1 {
+  animation-name: kpEyebrowIn;
+  animation-duration: 0.7s;
+  animation-delay: 0.1s;
+}
+
+.kp-home .kp-anim-2 {
+  animation-name: kpFadeUp;
+  animation-duration: 0.9s;
+  animation-delay: 0.25s;
+}
+
+.kp-home .kp-anim-3 {
+  animation-name: kpFadeUp;
+  animation-duration: 0.9s;
+  animation-delay: 0.42s;
+}
+
+.kp-home .kp-anim-4 {
+  animation-name: kpButtonIn;
+  animation-duration: 0.8s;
+  animation-delay: 0.58s;
+}
+
+.kp-home .kp-anim-5 {
+  animation-name: kpFadeIn;
+  animation-duration: 0.9s;
+  animation-delay: 0.78s;
+}
+
+.kp-home .kp-anim-artwork {
+  animation-name: kpArtworkIn;
+  animation-duration: 1.1s;
+  animation-delay: 0.35s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Subtle floating motion for the hero image after it enters */
+@keyframes kpArtworkFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.kp-home .kp-hero-artwork .kp-hero-image {
+  animation: kpArtworkFloat 6s ease-in-out 1.6s infinite;
+}
+
 /* ============ TRUST STRIP (stats + school logos) ============ */
 .kp-home .kp-connected-trust {
   --connected-ink: #10213d;
@@ -755,5 +856,6 @@ const styles = `
     transition: none !important;
     scroll-behavior: auto !important;
   }
+  .kp-home .kp-anim { opacity: 1 !important; }
 }
 `

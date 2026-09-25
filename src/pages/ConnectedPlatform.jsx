@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 import {
   ArrowRight,
@@ -67,6 +67,50 @@ function CardAvatar({ src, name, size = 'normal' }) {
 
 
 /* =========================================================
+   REVEAL HOOK
+   Each element observes itself. When it enters the viewport
+   it reveals — once, and only when scrolled to.
+========================================================= */
+
+function useReveal(options = {}) {
+  const ref = useRef(null)
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    const node = ref.current
+    if (!node) return
+
+    if (typeof IntersectionObserver === 'undefined') {
+      setIsVisible(true)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true)
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -60px 0px',
+        ...options,
+      }
+    )
+
+    observer.observe(node)
+
+    return () => observer.disconnect()
+  }, [])
+
+  return [ref, isVisible]
+}
+
+
+/* =========================================================
    FEATURE CARD
 ========================================================= */
 
@@ -78,8 +122,15 @@ function ConnectedCard({
   demoTo = '/demo',
   children,
 }) {
+  const [ref, isVisible] = useReveal()
+
   return (
-    <article className={`kp-card tone-${tone}`}>
+    <article
+      ref={ref}
+      className={`kp-card tone-${tone} kp-reveal ${
+        isVisible ? 'is-visible' : ''
+      }`}
+    >
       <div className="kp-card-head">
 
         <div className="kp-icon-box">
@@ -124,6 +175,17 @@ export default function ConnectedPlatform({
 
   const [adminTab, setAdminTab] =
     useState('students')
+
+
+  /* =======================================================
+     INDIVIDUAL REVEALS
+     Each of these observes itself and reveals on scroll.
+  ======================================================= */
+
+  const [pillRef, pillVisible] = useReveal()
+  const [titleRef, titleVisible] = useReveal()
+  const [subtitleRef, subtitleVisible] = useReveal()
+  const [controlsRef, controlsVisible] = useReveal()
 
 
   /* =======================================================
@@ -1006,7 +1068,12 @@ export default function ConnectedPlatform({
 
         <div className="kp-heading-wrapper">
 
-          <div className="kp-pill">
+          <div
+            ref={pillRef}
+            className={`kp-pill kp-reveal ${
+              pillVisible ? 'is-visible' : ''
+            }`}
+          >
 
             <Sparkles size={14} />
 
@@ -1014,7 +1081,13 @@ export default function ConnectedPlatform({
 
           </div>
 
-          <h2 className="kp-title">
+          <h2
+            ref={titleRef}
+            className={`kp-title kp-reveal ${
+              titleVisible ? 'is-visible' : ''
+            }`}
+            style={{ '--reveal-delay': '0.08s' }}
+          >
 
             Everything Your School Manages,<br />
 
@@ -1024,7 +1097,13 @@ export default function ConnectedPlatform({
 
           </h2>
 
-          <p className="kp-subtitle">
+          <p
+            ref={subtitleRef}
+            className={`kp-subtitle kp-reveal ${
+              subtitleVisible ? 'is-visible' : ''
+            }`}
+            style={{ '--reveal-delay': '0.16s' }}
+          >
 
 From enrolment and attendance to lesson planning, payments, progress tracking and parent updates, Kinderpedia brings the day-to-day running of your school into one system.
 
@@ -1037,7 +1116,12 @@ From enrolment and attendance to lesson planning, payments, progress tracking an
             CONTROLS
         ================================================= */}
 
-        <div className="kp-controls-bar">
+        <div
+          ref={controlsRef}
+          className={`kp-controls-bar kp-reveal ${
+            controlsVisible ? 'is-visible' : ''
+          }`}
+        >
 
           <div className="kp-tabs-group">
 
@@ -1219,6 +1303,51 @@ const styles = `
 
   padding: 0;
 
+}
+
+
+/* =========================================================
+   REVEAL ANIMATIONS
+   Each .kp-reveal element starts hidden and rises up when
+   it receives .is-visible (added by IntersectionObserver).
+========================================================= */
+
+@keyframes kpRevealUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kpRevealPill {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.kp-connected-platform .kp-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  will-change: opacity, transform;
+}
+
+.kp-connected-platform .kp-reveal.is-visible {
+  animation: kpRevealUp 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--reveal-delay, 0s);
+}
+
+.kp-connected-platform .kp-pill.kp-reveal.is-visible {
+  animation-name: kpRevealPill;
+  animation-duration: 0.65s;
 }
 
 
@@ -3371,6 +3500,17 @@ const styles = `
       1fr
       .7fr;
 
+  }
+
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+  .kp-connected-platform .kp-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
   }
 
 }

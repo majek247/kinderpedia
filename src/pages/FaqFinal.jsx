@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Plus } from 'lucide-react'
 
@@ -12,6 +12,80 @@ function Action({ children = 'Book a free demo', to = '/demo', className = '' })
   return /^https?:/.test(to)
     ? <a className={classes} href={to}>{content}</a>
     : <Link className={classes} to={to}>{content}</Link>
+}
+
+/* =========================================================
+   REVEAL HOOK
+========================================================= */
+
+function useReveal(options = {}) {
+  const ref = useRef(null)
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    const node = ref.current
+    if (!node) return
+
+    if (typeof IntersectionObserver === 'undefined') {
+      setIsVisible(true)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true)
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -60px 0px',
+        ...options,
+      }
+    )
+
+    observer.observe(node)
+
+    return () => observer.disconnect()
+  }, [])
+
+  return [ref, isVisible]
+}
+
+/* =========================================================
+   FAQ ITEM
+========================================================= */
+
+function FaqItem({ question, answer, index }) {
+  const [open, setOpen] = useState(false)
+  const [ref, isVisible] = useReveal({ threshold: 0.2 })
+
+  return (
+    <div
+      ref={ref}
+      className={`kp-faq-item kp-reveal ${isVisible ? 'is-visible' : ''} ${
+        open ? 'is-open' : ''
+      }`}
+      style={{ '--reveal-delay': `${index * 0.06}s` }}
+    >
+      <button
+        type="button"
+        className="kp-faq-trigger"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span>{question}</span>
+        <Plus size={20} aria-hidden="true" />
+      </button>
+
+      <div className="kp-faq-answer">
+        <p>{answer}</p>
+      </div>
+    </div>
+  )
 }
 
 function FAQs() {
@@ -53,13 +127,8 @@ function FAQs() {
       'Kinderpedia gives school leaders access to dashboards and reports covering areas such as attendance, student progress and day-to-day operations. Teams can use this information to spot patterns, monitor activity and prepare updates for internal reviews, while keeping important school data in one place instead of combining separate spreadsheets and reporting tools.',
     ],
   ]
-  
 
-  const [openIndex, setOpenIndex] = useState(null)
-
-  const toggle = (index) => {
-    setOpenIndex((current) => (current === index ? null : index))
-  }
+  const [titleRef, titleVisible] = useReveal({ threshold: 0.2 })
 
   return (
     <section
@@ -68,35 +137,23 @@ function FAQs() {
       aria-labelledby="kp-faq-refresh-title"
     >
       <div className="kp-faq-container kp-faq-refresh-grid">
-        <h2 id="kp-faq-refresh-title">
+        <h2
+          id="kp-faq-refresh-title"
+          ref={titleRef}
+          className={`kp-reveal ${titleVisible ? 'is-visible' : ''}`}
+        >
           Common Questions From Schools Evaluating Kinderpedia
         </h2>
 
         <div className="kp-faq-refresh-items">
-          {questions.map(([question, answer], index) => {
-            const isOpen = openIndex === index
-
-            return (
-              <div
-                key={question}
-                className={`kp-faq-item ${isOpen ? 'is-open' : ''}`}
-              >
-                <button
-                  type="button"
-                  className="kp-faq-trigger"
-                  aria-expanded={isOpen}
-                  onClick={() => toggle(index)}
-                >
-                  <span>{question}</span>
-                  <Plus size={20} aria-hidden="true" />
-                </button>
-
-                <div className="kp-faq-answer">
-                  <p>{answer}</p>
-                </div>
-              </div>
-            )
-          })}
+          {questions.map(([question, answer], index) => (
+            <FaqItem
+              key={question}
+              question={question}
+              answer={answer}
+              index={index}
+            />
+          ))}
         </div>
       </div>
     </section>
@@ -104,13 +161,21 @@ function FAQs() {
 }
 
 function FinalCTA({ demoTo }) {
+  const [copyRef, copyVisible] = useReveal({ threshold: 0.15 })
+  const [photoRef, photoVisible] = useReveal({ threshold: 0.15 })
+
   return (
     <section id="kp-final-cta" className="kp-final-refresh-wrap">
       <div className="kp-faq-container">
         <div className="kp-final-refresh">
-          <div className="kp-final-refresh-copy">
-                    <h2>
-             See How Much Your Team Could<span> Manage in Kinderpedia.</span>
+          <div
+            ref={copyRef}
+            className={`kp-final-refresh-copy kp-reveal ${
+              copyVisible ? 'is-visible' : ''
+            }`}
+          >
+            <h2>
+              See How Much Your Team Could<span> Manage in Kinderpedia.</span>
             </h2>
 
             <p>
@@ -122,7 +187,13 @@ function FinalCTA({ demoTo }) {
             </Action>
           </div>
 
-          <div className="kp-final-refresh-photo">
+          <div
+            ref={photoRef}
+            className={`kp-final-refresh-photo kp-reveal ${
+              photoVisible ? 'is-visible' : ''
+            }`}
+            style={{ '--reveal-delay': '0.15s' }}
+          >
             <img
               src={KP_CARD_ASSETS.emma}
               alt="Student smiling at school"
@@ -174,6 +245,44 @@ const styles = `
 .kp-faq-container {
   width: min(1280px, calc(100% - 80px));
   margin-inline: auto;
+}
+
+/* ============ Scroll Reveal ============ */
+@keyframes kpFaqRevealUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kpFaqRevealFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.kp-faq-final-wrap .kp-reveal {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.kp-faq-final-wrap .kp-reveal.is-visible {
+  animation: kpFaqRevealUp 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--reveal-delay, 0s);
+}
+
+/* Photo uses fade only (large block, sliding feels heavy) */
+.kp-faq-final-wrap .kp-final-refresh-photo.kp-reveal.is-visible {
+  animation-name: kpFaqRevealFade;
+  animation-duration: 0.9s;
+}
+
+/* FAQ items stagger tightly */
+.kp-faq-final-wrap .kp-faq-item.kp-reveal.is-visible {
+  animation-duration: 0.65s;
 }
 
 /* ============ FAQ ============ */
@@ -486,6 +595,12 @@ const styles = `
   .kp-faq-final-wrap *::after {
     animation: none !important;
     transition: none !important;
+  }
+
+  .kp-faq-final-wrap .kp-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
   }
 }
 `

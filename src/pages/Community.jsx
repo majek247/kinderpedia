@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from 'react'
+import { useId, useRef, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   ArrowRight,
@@ -30,6 +30,49 @@ function Action({ children = 'Book a free demo', to = '/demo', className = '' })
   return /^https?:/.test(to)
     ? <a className={classes} href={to}>{content}</a>
     : <Link className={classes} to={to}>{content}</Link>
+}
+
+/* =========================================================
+   REVEAL HOOK
+   Each element observes itself and reveals once when it
+   enters the viewport.
+========================================================= */
+
+function useReveal(options = {}) {
+  const ref = useRef(null)
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    const node = ref.current
+    if (!node) return
+
+    if (typeof IntersectionObserver === 'undefined') {
+      setIsVisible(true)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true)
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -60px 0px',
+        ...options,
+      }
+    )
+
+    observer.observe(node)
+
+    return () => observer.disconnect()
+  }, [])
+
+  return [ref, isVisible]
 }
 
 function CardAvatar({ src, name, large = false }) {
@@ -357,6 +400,15 @@ export default function Community({ demoTo = '/demo' }) {
   const uid = useId()
   const selected = KP_PEOPLE_VIEWS[active]
 
+  /* Individual reveals for each visual block */
+  const [introRef, introVisible] = useReveal()
+  const [tabsRef, tabsVisible] = useReveal({ threshold: 0.2 })
+  const [benefitsRef, benefitsVisible] = useReveal({ threshold: 0.1 })
+  const [visualRef, visualVisible] = useReveal({ threshold: 0.1 })
+  const [bannerRef, bannerVisible] = useReveal({ threshold: 0.1 })
+  const [bannerCopyRef, bannerCopyVisible] = useReveal({ threshold: 0.15 })
+  const [phonesRef, phonesVisible] = useReveal({ threshold: 0.1 })
+
   function handleTabKey(event, index) {
     let next
 
@@ -388,18 +440,24 @@ export default function Community({ demoTo = '/demo' }) {
       <div className="kp-community-container">
         <div className="kp-people-stage">
           <div className="kp-people-intro">
-                    <h2 id={`${uid}-heading`}>
+            <h2
+              id={`${uid}-heading`}
+              ref={introRef}
+              className={`kp-reveal ${introVisible ? 'is-visible' : ''}`}
+            >
               Built for School Leaders,
               <br />
               Teachers and Families.
             </h2>
 
-
-
             <div
-              className="kp-people-tabs"
+              ref={tabsRef}
+              className={`kp-people-tabs kp-reveal ${
+                tabsVisible ? 'is-visible' : ''
+              }`}
               role="tablist"
               aria-label="Explore Kinderpedia by role"
+              style={{ '--reveal-delay': '0.08s' }}
             >
               {KP_PEOPLE_VIEWS.map((role, index) => (
                 <button
@@ -428,9 +486,19 @@ export default function Community({ demoTo = '/demo' }) {
             aria-labelledby={`${uid}-tab-${selected.id}`}
             tabIndex={0}
           >
-            <div className="kp-people-benefits" key={`${selected.id}-copy`}>
-              {selected.benefits.map(([title, text]) => (
-                <div className="kp-people-benefit" key={title}>
+            <div
+              ref={benefitsRef}
+              className={`kp-people-benefits kp-reveal ${
+                benefitsVisible ? 'is-visible' : ''
+              }`}
+              key={`${selected.id}-copy`}
+            >
+              {selected.benefits.map(([title, text], i) => (
+                <div
+                  className="kp-people-benefit"
+                  key={title}
+                  style={{ '--benefit-delay': `${i * 0.1}s` }}
+                >
                   <span className="kp-people-check">
                     <Check size={15} strokeWidth={2.6} aria-hidden="true" />
                   </span>
@@ -443,7 +511,12 @@ export default function Community({ demoTo = '/demo' }) {
               ))}
             </div>
 
-            <div className={`kp-people-visual is-${selected.id}`}>
+            <div
+              ref={visualRef}
+              className={`kp-people-visual is-${selected.id} kp-reveal ${
+                visualVisible ? 'is-visible' : ''
+              }`}
+            >
               <img
                 key={selected.image}
                 className="kp-people-photo"
@@ -463,9 +536,17 @@ export default function Community({ demoTo = '/demo' }) {
           </div>
         </div>
 
-        <div className="kp-parent-banner">
+        <div
+          ref={bannerRef}
+          className={`kp-parent-banner kp-reveal ${
+            bannerVisible ? 'is-visible' : ''
+          }`}
+        >
           <div
-            className="kp-parent-phones"
+            ref={phonesRef}
+            className={`kp-parent-phones kp-reveal ${
+              phonesVisible ? 'is-visible' : ''
+            }`}
             role="img"
             aria-label="Illustrative parent app showing classroom updates and messages"
           >
@@ -473,10 +554,15 @@ export default function Community({ demoTo = '/demo' }) {
             <ParentPhone messages />
           </div>
 
-          <div className="kp-parent-banner-copy">
+          <div
+            ref={bannerCopyRef}
+            className={`kp-parent-banner-copy kp-reveal ${
+              bannerCopyVisible ? 'is-visible' : ''
+            }`}
+          >
             <h2>Everything Parents Need to Stay Connected to School.</h2>
             <p>
-          Kinderpedia gives parents one place to see school updates, contact teachers and follow their child’s learning.
+              Kinderpedia gives parents one place to see school updates, contact teachers and follow their child’s learning.
             </p>
 
             <div className="kp-parent-benefits">
@@ -484,8 +570,12 @@ export default function Community({ demoTo = '/demo' }) {
                 [ContactRound, 'Daily updates', 'Share classroom moments and important announcements.'],
                 [MessageCircle, 'Direct communication', 'Message teachers and school staff securely.'],
                 [Heart, 'Shared moments', 'Celebrate learning, achievements and everyday progress.'],
-              ].map(([Icon, title, text]) => (
-                <div className="kp-parent-benefit" key={title}>
+              ].map(([Icon, title, text], i) => (
+                <div
+                  className="kp-parent-benefit"
+                  key={title}
+                  style={{ '--benefit-delay': `${i * 0.1 + 0.1}s` }}
+                >
                   <span><Icon size={20} strokeWidth={1.7} /></span>
                   <div><h3>{title}</h3><p>{text}</p></div>
                 </div>
@@ -1412,7 +1502,49 @@ const styles = `
   box-shadow: 0 8px 18px rgba(15, 181, 168, .28);
 }
 
-/* ============ Keyframes ============ */
+/* ============ Scroll Reveal ============ */
+@keyframes kpRevealUp {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kpRevealScale {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.kp-people-section .kp-reveal {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.kp-people-section .kp-reveal.is-visible {
+  animation: kpRevealUp 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--reveal-delay, 0s);
+}
+
+.kp-people-section .kp-parent-banner.kp-reveal.is-visible {
+  animation-name: kpRevealScale;
+  animation-duration: 1s;
+}
+
+.kp-people-section .kp-people-visual.kp-reveal.is-visible {
+  animation-duration: 1s;
+}
+
+/* ============ Existing micro animations (keep) ============ */
 @keyframes kp-people-enter {
   from { opacity: 0; transform: translateY(7px); }
   to { opacity: 1; transform: translateY(0); }
@@ -1421,6 +1553,37 @@ const styles = `
 @keyframes kp-people-photo-enter {
   from { opacity: .3; }
   to { opacity: 1; }
+}
+
+/* Stagger benefit rows inside a revealed group */
+.kp-people-section .kp-people-benefits.is-visible .kp-people-benefit {
+  opacity: 0;
+  animation: kpRevealUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--benefit-delay, 0s);
+}
+
+.kp-people-section .kp-parent-benefits .kp-parent-benefit {
+  opacity: 0;
+}
+
+.kp-people-section .kp-parent-banner-copy.is-visible .kp-parent-benefit {
+  animation: kpRevealUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--benefit-delay, 0.1s);
+}
+
+.kp-people-section .kp-parent-banner-copy.is-visible .kp-parent-cta {
+  opacity: 0;
+  animation: kpRevealUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.45s forwards;
+}
+
+.kp-people-section .kp-parent-banner-copy.is-visible > h2 {
+  opacity: 0;
+  animation: kpRevealUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.kp-people-section .kp-parent-banner-copy.is-visible > p {
+  opacity: 0;
+  animation: kpRevealUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
 }
 
 /* ============ Responsive ============ */
@@ -1597,6 +1760,16 @@ const styles = `
   .kp-people-section *::after {
     animation: none !important;
     transition: none !important;
+  }
+
+  .kp-people-section .kp-reveal,
+  .kp-people-section .kp-people-benefit,
+  .kp-people-section .kp-parent-benefit,
+  .kp-people-section .kp-parent-cta,
+  .kp-people-section .kp-parent-banner-copy > h2,
+  .kp-people-section .kp-parent-banner-copy > p {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 `

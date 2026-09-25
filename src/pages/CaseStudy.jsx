@@ -1,4 +1,4 @@
-import { useId, useState } from 'react'
+import { useId, useState, useEffect, useRef } from 'react'
 import { ArrowRight, Building2, BookOpen, MessageCircle, CalendarDays, Check, Quote, Leaf } from 'lucide-react'
 
 const STORY_URL = 'https://www.kinderpedia.co/en/case-studies/maple-bear-case-study'
@@ -8,18 +8,15 @@ const STORY_URL = 'https://www.kinderpedia.co/en/case-studies/maple-bear-case-st
 const DEFAULT_IMAGE = '/images/classroom-activity.png'
 
 const PREVIEWS = {
-
-communication: {
-  label: 'Communication',
-  title: 'Choose exactly who receives each update.',
-  rows: [
-    ['Class update', 'Send learning updates and announcements to every family in a class.', 'Class parents'],
-    ['Individual message', 'Send child-specific information directly to one family.', 'One family'],
-    ['School announcement', 'Share important information with the entire school community.', 'Whole school'],
-  ],
-},
-
-
+  communication: {
+    label: 'Communication',
+    title: 'Choose exactly who receives each update.',
+    rows: [
+      ['Class update', 'Send learning updates and announcements to every family in a class.', 'Class parents'],
+      ['Individual message', 'Send child-specific information directly to one family.', 'One family'],
+      ['School announcement', 'Share important information with the entire school community.', 'Whole school'],
+    ],
+  },
   calendar: {
     label: 'Calendar',
     title: 'More moments together.',
@@ -40,6 +37,47 @@ communication: {
   },
 }
 
+/* =========================================================
+   REVEAL HOOK
+========================================================= */
+
+function useReveal(options = {}) {
+  const ref = useRef(null)
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    const node = ref.current
+    if (!node) return
+
+    if (typeof IntersectionObserver === 'undefined') {
+      setIsVisible(true)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true)
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -60px 0px',
+        ...options,
+      }
+    )
+
+    observer.observe(node)
+
+    return () => observer.disconnect()
+  }, [])
+
+  return [ref, isVisible]
+}
+
 function SchoolMark() {
   return <span className="kp-case-mark"><Leaf size={21} aria-hidden="true" /></span>
 }
@@ -54,9 +92,9 @@ function CasePreview() {
       <div className="kp-case-preview-heading">
         <SchoolMark />
         <div>
-  <strong>Maple Bear Cluj</strong>
-  <small>Parent communication</small>
-</div>
+          <strong>Maple Bear Cluj</strong>
+          <small>Parent communication</small>
+        </div>
         <span className="kp-case-online"><span />Connected</span>
       </div>
       <div className="kp-case-switcher" role="group" aria-label="Choose a product preview">
@@ -85,20 +123,51 @@ export default function CaseStudy({ classroomImage = DEFAULT_IMAGE, storyUrl = S
   const headingId = useId()
   const [failedImage, setFailedImage] = useState(null)
 
+  /* Individual reveals */
+  const [dividerRef, dividerVisible] = useReveal()
+  const [pillRef, pillVisible] = useReveal()
+  const [titleRef, titleVisible] = useReveal()
+  const [photoRef, photoVisible] = useReveal({ threshold: 0.1 })
+  const [eyebrowRef, eyebrowVisible] = useReveal()
+  const [headingRef, headingVisible] = useReveal({ threshold: 0.2 })
+  const [introRef, introVisible] = useReveal({ threshold: 0.2 })
+  const [quoteRef, quoteVisible] = useReveal({ threshold: 0.2 })
+  const [ctaRef, ctaVisible] = useReveal({ threshold: 0.2 })
+  const [productRef, productVisible] = useReveal({ threshold: 0.1 })
+  const [proofRef, proofVisible] = useReveal({ threshold: 0.15 })
+
   return (
     <section className="kp-case-section" id="kp-stories" aria-labelledby={headingId}>
       <style>{styles}</style>
       <div className="kp-case-container">
 
-        <div className="kp-case-divider" aria-hidden="true" />
+        <div
+          ref={dividerRef}
+          className={`kp-case-divider kp-reveal ${dividerVisible ? 'is-visible' : ''}`}
+          aria-hidden="true"
+        />
 
         <div className="kp-case-intro-header">
-<span className="kp-case-pill">Customer Story</span>
-<h2 className="kp-case-title">How Maple Bear Cluj Fixed Fragmented Parent Communication.</h2>
+          <span
+            ref={pillRef}
+            className={`kp-case-pill kp-reveal ${pillVisible ? 'is-visible' : ''}`}
+          >
+            Customer Story
+          </span>
+          <h2
+            ref={titleRef}
+            className={`kp-case-title kp-reveal ${titleVisible ? 'is-visible' : ''}`}
+            style={{ '--reveal-delay': '0.08s' }}
+          >
+            How Maple Bear Cluj Fixed Fragmented Parent Communication.
+          </h2>
         </div>
 
         <article className="kp-case-card">
-          <div className="kp-case-photo">
+          <div
+            ref={photoRef}
+            className={`kp-case-photo kp-reveal ${photoVisible ? 'is-visible' : ''}`}
+          >
             {classroomImage && failedImage !== classroomImage ? (
               <img src={classroomImage} alt="Illustrative classroom activity with a teacher and children" loading="lazy" onError={() => setFailedImage(classroomImage)} />
             ) : (
@@ -109,55 +178,90 @@ export default function CaseStudy({ classroomImage = DEFAULT_IMAGE, storyUrl = S
 
           <div className="kp-case-content">
 
+            <p
+              ref={eyebrowRef}
+              className={`kp-case-eyebrow kp-reveal ${eyebrowVisible ? 'is-visible' : ''}`}
+            >
+              Featured case study · Maple Bear Cluj
+            </p>
 
-       <p className="kp-case-eyebrow">Featured case study · Maple Bear Cluj</p>
+            <h2
+              id={headingId}
+              ref={headingRef}
+              className={`kp-reveal ${headingVisible ? 'is-visible' : ''}`}
+              style={{ '--reveal-delay': '0.08s' }}
+            >
+              Important updates.<br />
+              <span>Sent to the right families.</span>
+            </h2>
 
-<h2 id={headingId}>
-  Important updates.<br />
-  <span>Sent to the right families.</span>
-</h2>
+            <p
+              ref={introRef}
+              className={`kp-case-intro kp-reveal ${introVisible ? 'is-visible' : ''}`}
+              style={{ '--reveal-delay': '0.16s' }}
+            >
+              Maple Bear Cluj replaced fragmented parent communication with one place for teachers to message a family, a class or the entire school community.
+            </p>
 
-<p className="kp-case-intro">
-  Maple Bear Cluj replaced fragmented parent communication with one place for teachers to message a family, a class or the entire school community.
-</p>
-         
-            <div className="kp-case-quote">
+            <div
+              ref={quoteRef}
+              className={`kp-case-quote kp-reveal ${quoteVisible ? 'is-visible' : ''}`}
+              style={{ '--reveal-delay': '0.24s' }}
+            >
               <Quote size={24} aria-hidden="true" />
               <div>
                 <blockquote>“The message goes directly to the right people. There are no more misunderstandings or confusion.”</blockquote>
                 <p><strong>Iulia Moldovan</strong><span>Teacher, Maple Bear Cluj</span></p>
               </div>
             </div>
-                   <a className="kp-case-cta" href={storyUrl} target="_blank" rel="noopener noreferrer">Read the Maple Bear story <ArrowRight size={17} aria-hidden="true" /></a>
-         </div>
 
-          <div className="kp-case-product"><CasePreview /></div>
+            <a
+              ref={ctaRef}
+              className={`kp-case-cta kp-reveal ${ctaVisible ? 'is-visible' : ''}`}
+              style={{ '--reveal-delay': '0.32s' }}
+              href={storyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Read the Maple Bear story <ArrowRight size={17} aria-hidden="true" />
+            </a>
+          </div>
 
-        <div className="kp-case-proof">
-  <div>
-    <Building2 aria-hidden="true" />
-    <span>
-      <strong>3 Cluj-Napoca locations</strong>
-      <small>One view across the school community</small>
-    </span>
-  </div>
+          <div
+            ref={productRef}
+            className={`kp-case-product kp-reveal ${productVisible ? 'is-visible' : ''}`}
+          >
+            <CasePreview />
+          </div>
 
-  <div>
-    <BookOpen aria-hidden="true" />
-    <span>
-      <strong>Canadian + Romanian curricula</strong>
-      <small>Both supported inside Kinderpedia</small>
-    </span>
-  </div>
+          <div
+            ref={proofRef}
+            className={`kp-case-proof kp-reveal ${proofVisible ? 'is-visible' : ''}`}
+          >
+            <div>
+              <Building2 aria-hidden="true" />
+              <span>
+                <strong>3 Cluj-Napoca locations</strong>
+                <small>One view across the school community</small>
+              </span>
+            </div>
 
-  <div>
-    <MessageCircle aria-hidden="true" />
-    <span>
-      <strong>Targeted parent communication</strong>
-      <small>One family, one class or the whole school</small>
-    </span>
-  </div>
-</div>
+            <div>
+              <BookOpen aria-hidden="true" />
+              <span>
+                <strong>Canadian + Romanian curricula</strong>
+                <small>Both supported inside Kinderpedia</small>
+              </span>
+            </div>
+
+            <div>
+              <MessageCircle aria-hidden="true" />
+              <span>
+                <strong>Targeted parent communication</strong>
+                <small>One family, one class or the whole school</small>
+              </span>
+            </div>
+          </div>
 
         </article>
       </div>
@@ -190,6 +294,58 @@ const styles = `
 .kp-case-container {
   width: min(1280px, calc(100% - 80px));
   margin-inline: auto;
+}
+
+/* ============ Scroll Reveal ============ */
+@keyframes kpCaseRevealUp {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kpCaseRevealScale {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes kpCaseRevealFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.kp-case-section .kp-reveal {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.kp-case-section .kp-reveal.is-visible {
+  animation: kpCaseRevealUp 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--reveal-delay, 0s);
+}
+
+.kp-case-section .kp-case-photo.kp-reveal.is-visible {
+  animation-name: kpCaseRevealFade;
+  animation-duration: 1s;
+}
+
+.kp-case-section .kp-case-product.kp-reveal.is-visible {
+  animation-name: kpCaseRevealScale;
+  animation-duration: 0.9s;
+}
+
+.kp-case-section .kp-case-divider.kp-reveal.is-visible {
+  animation: kpCaseRevealFade 0.6s ease forwards;
 }
 
 /* ============ Divider above the section ============ */
@@ -697,5 +853,11 @@ const styles = `
 @media (prefers-reduced-motion: reduce) {
   .kp-case-cta { transition: none; }
   .kp-case-cta:hover { transform: none; }
+
+  .kp-case-section .kp-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
 }
 `

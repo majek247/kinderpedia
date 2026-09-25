@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
 import {
   ArrowRight,
   ShieldCheck,
@@ -24,6 +25,47 @@ function Action({ children = 'Book a free demo', to = '/demo', className = '' })
     : <Link className={classes} to={to}>{content}</Link>
 }
 
+/* =========================================================
+   REVEAL HOOK
+========================================================= */
+
+function useReveal(options = {}) {
+  const ref = useRef(null)
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    const node = ref.current
+    if (!node) return
+
+    if (typeof IntersectionObserver === 'undefined') {
+      setIsVisible(true)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true)
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -60px 0px',
+        ...options,
+      }
+    )
+
+    observer.observe(node)
+
+    return () => observer.disconnect()
+  }, [])
+
+  return [ref, isVisible]
+}
+
 function Onboarding() {
   const steps = [
     ['Discover', 'We review your campuses, roles, workflows and the systems your school already uses today.'],
@@ -32,32 +74,57 @@ function Onboarding() {
     ['Grow', 'Roll Kinderpedia out across your school with onboarding and ongoing guidance for your team.'],
   ]
 
+  const [titleRef, titleVisible] = useReveal({ threshold: 0.2 })
+
   return (
     <section
       className="kp-start-path"
       aria-labelledby="kp-start-path-title"
     >
       <div className="kp-proof-container">
-        <h2 id="kp-start-path-title">
-   Move Your School Onto Kinderpedia With a Clear Rollout Plan.
+        <h2
+          id="kp-start-path-title"
+          ref={titleRef}
+          className={`kp-reveal ${titleVisible ? 'is-visible' : ''}`}
+        >
+          Move Your School Onto Kinderpedia With a Clear Rollout Plan.
         </h2>
 
         <ol className="kp-start-path-grid">
           {steps.map(([title, text], index) => (
-            <li className="kp-start-path-step" key={title}>
-              <span className="kp-start-path-number">
-                {index + 1}
-              </span>
-
-              <div>
-                <h3>{title}</h3>
-                <p>{text}</p>
-              </div>
-            </li>
+            <StepItem
+              key={title}
+              index={index}
+              title={title}
+              text={text}
+            />
           ))}
         </ol>
       </div>
     </section>
+  )
+}
+
+function StepItem({ index, title, text }) {
+  const [ref, isVisible] = useReveal({ threshold: 0.2 })
+
+  return (
+    <li
+      ref={ref}
+      className={`kp-start-path-step kp-reveal ${
+        isVisible ? 'is-visible' : ''
+      }`}
+      style={{ '--reveal-delay': `${index * 0.12}s` }}
+    >
+      <span className="kp-start-path-number">
+        {index + 1}
+      </span>
+
+      <div>
+        <h3>{title}</h3>
+        <p>{text}</p>
+      </div>
+    </li>
   )
 }
 
@@ -83,33 +150,57 @@ function DataCare() {
     },
   ]
 
+  const [titleRef, titleVisible] = useReveal({ threshold: 0.2 })
+
   return (
     <section
       className="kp-privacy-strip"
       aria-labelledby="kp-privacy-strip-title"
     >
       <div className="kp-proof-container kp-privacy-strip-inner">
-        <h2 id="kp-privacy-strip-title">
+        <h2
+          id="kp-privacy-strip-title"
+          ref={titleRef}
+          className={`kp-reveal ${titleVisible ? 'is-visible' : ''}`}
+        >
           <span>Privacy</span> built into everyday school <span>life.</span>
         </h2>
 
         <div className="kp-privacy-items">
-          {items.map(({ icon: Icon, title, text, tone }) => (
-            <div
+          {items.map(({ icon: Icon, title, text, tone }, index) => (
+            <PrivacyItem
               key={title}
-              className={`kp-privacy-item is-${tone}`}
-            >
-              <Icon size={32} strokeWidth={1.7} aria-hidden="true" />
-
-              <div>
-                <h3>{title}</h3>
-                <p>{text}</p>
-              </div>
-            </div>
+              Icon={Icon}
+              title={title}
+              text={text}
+              tone={tone}
+              index={index}
+            />
           ))}
         </div>
       </div>
     </section>
+  )
+}
+
+function PrivacyItem({ Icon, title, text, tone, index }) {
+  const [ref, isVisible] = useReveal({ threshold: 0.2 })
+
+  return (
+    <div
+      ref={ref}
+      className={`kp-privacy-item is-${tone} kp-reveal ${
+        isVisible ? 'is-visible' : ''
+      }`}
+      style={{ '--reveal-delay': `${index * 0.12}s` }}
+    >
+      <Icon size={32} strokeWidth={1.7} aria-hidden="true" />
+
+      <div>
+        <h3>{title}</h3>
+        <p>{text}</p>
+      </div>
+    </div>
   )
 }
 
@@ -152,6 +243,28 @@ const styles = `
 .kp-proof-container {
   width: min(1280px, calc(100% - 80px));
   margin-inline: auto;
+}
+
+/* ============ Scroll Reveal ============ */
+@keyframes kpProofRevealUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.kp-school-proof-wrap .kp-reveal {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.kp-school-proof-wrap .kp-reveal.is-visible {
+  animation: kpProofRevealUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--reveal-delay, 0s);
 }
 
 /* ============ Integrations row ============ */
@@ -513,6 +626,12 @@ const styles = `
   .kp-school-proof-wrap *::after {
     animation: none !important;
     transition: none !important;
+  }
+
+  .kp-school-proof-wrap .kp-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
   }
 }
 `
