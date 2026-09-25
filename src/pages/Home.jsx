@@ -64,23 +64,24 @@ function Hero({ demoTo }) {
       className="kp-hero kp-hero-refresh"
       aria-labelledby="kp-hero-title"
     >
-      <div className="kp-hero-ribbon" aria-hidden="true" />
-
       <div className="kp-container kp-hero-grid">
         <div className="kp-hero-copy">
-          <span className="kp-eyebrow">
-            CONNECTED SCHOOL MANAGEMENT
+                   <span className="kp-eyebrow">
+            AI-POWERED SCHOOL MANAGEMENT SOFTWARE
           </span>
 
+
+
           <h1 id="kp-hero-title">
-            A better school day.
-            <br />
-            <span>For everyone.</span>
+             Run Your School Day in<br />
+            <span>9 Fewer Hours a Week.</span>
           </h1>
 
+       
+
+
           <p className="kp-hero-description">
-            Bring school operations, learning and family communication
-            together in one intuitive platform.
+            Manage daily school operations, learning and parent communication in one place, with less admin and fewer repetitive tasks.
           </p>
 
           <div className="kp-actions">
@@ -88,9 +89,11 @@ function Hero({ demoTo }) {
 
             <a
               className="kp-button kp-button-secondary"
-              href="#kp-platform"
+              href={`${OFFICIAL}/en/get-a-price`}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Explore the platform
+              View pricing
               <ArrowRight size={17} aria-hidden="true" />
             </a>
           </div>
@@ -225,7 +228,7 @@ function Footer() {
             <a href={`${OFFICIAL}/en/company/about`}>About us</a>
             <a href={`${OFFICIAL}/en/company/careers`}>Careers</a>
             <a href={`${OFFICIAL}/en/contact`}>Contact</a>
-            <a href={`${OFFICIAL}/en/pricing`}>Pricing</a>
+            <a href={`${OFFICIAL}/en/get-a-price`} target="_blank" rel="noopener noreferrer">Pricing</a>
           </div>
 
           <div className="kp-footer-refresh-social">
@@ -264,6 +267,10 @@ export default function Home({ showChrome = false, demoTo = '/demo' }) {
 }
 
 const styles = `
+/* ============ GOOGLE FONTS ============ */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
 /* ============ BRAND TOKENS ============ */
 .kp-home {
   --kp-berry: #b93360;
@@ -277,7 +284,7 @@ const styles = `
   --kp-shadow: 0 24px 65px -30px rgba(50, 37, 63, .24);
   color: var(--kp-slate);
   background: #fff;
-  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 16px;
   line-height: 1.6;
   isolation: isolate;
@@ -307,7 +314,16 @@ const styles = `
 
 /* ============ HEADER ============ */
 .kp-home .kp-header { background: #fffffff5; border-bottom: 1px solid #eeedf2; position: sticky; top: 0; z-index: 30; backdrop-filter: blur(16px); }
-.kp-home .kp-header-inner { display: flex; align-items: center; justify-content: space-between; min-height: 86px; gap: 28px; }
+.kp-home .kp-header-inner { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  min-height: 86px; 
+  gap: 28px; 
+  /* MATCHES THE HERO WIDTH EXACTLY */
+  width: min(1280px, calc(100% - 80px));
+  margin-inline: auto;
+}
 .kp-home .kp-logo { display: inline-flex; align-items: center; flex-shrink: 0; }
 .kp-home .kp-logo img { width: 166px; height: 40px; object-fit: contain; }
 .kp-home .kp-logo > span { font-size: 29px; font-weight: 800; font-style: italic; letter-spacing: -1.6px; }
@@ -325,100 +341,64 @@ const styles = `
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  padding: 64px 0 52px;
-  background:
-    radial-gradient(ellipse at 76% 38%, rgba(124, 215, 202, 0.22), transparent 58%),
-    radial-gradient(ellipse at 5% 10%, rgba(255, 255, 255, 0.98), transparent 52%),
-    linear-gradient(118deg, #effaf8 0%, #f8fdfc 46%, #e4f5f1 100%);
-}
-
-.kp-home .kp-hero-refresh::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.3;
-  background-image: radial-gradient(rgba(32, 127, 120, 0.16) 0.6px, transparent 0.6px);
-  background-size: 7px 7px;
-  mask-image: linear-gradient(to bottom, #000, transparent 90%);
-}
-
-.kp-home .kp-hero-refresh::after {
-  content: '';
-  position: absolute;
-  z-index: 0;
-  width: 115%;
-  height: 380px;
-  left: -24%;
-  bottom: -300px;
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  border-radius: 50%;
-  transform: rotate(8deg);
-  background: rgba(255, 255, 255, 0.24);
-  box-shadow:
-    0 -20px 0 rgba(255, 255, 255, 0.2),
-    0 -42px 0 rgba(120, 196, 184, 0.07),
-    0 -65px 0 rgba(255, 255, 255, 0.17);
-  pointer-events: none;
-}
-
-.kp-home .kp-hero-refresh .kp-hero-ribbon {
-  position: absolute;
-  z-index: 0;
-  width: 1000px;
-  height: 370px;
-  top: -270px;
-  right: -280px;
-  border: 26px solid rgba(255, 255, 255, 0.34);
-  border-radius: 50%;
-  transform: rotate(-22deg);
-  box-shadow:
-    0 16px 32px rgba(31, 133, 119, 0.04),
-    inset 0 -10px 22px rgba(31, 133, 119, 0.04);
-  pointer-events: none;
+  padding: 40px 0 30px;
+  background: linear-gradient(180deg, #f8fdfc 0%, #ffffff 100%);
 }
 
 .kp-home .kp-hero-refresh .kp-hero-grid {
   position: relative;
   z-index: 1;
-  width: min(1200px, calc(100% - 80px));
+  width: min(1280px, calc(100% - 80px));
   margin-inline: auto;
   display: grid;
-  grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.32fr);
-  align-items: stretch;
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr);
+  align-items: center;
+  gap: 32px;
 }
 
 .kp-home .kp-hero-refresh .kp-hero-copy {
   position: relative;
   z-index: 2;
   min-width: 0;
-  max-width: 560px;
-  padding-block: 28px;
+  max-width: 620px;
+  padding-block: 0;
+  padding-top: 70px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-self: center;
+  justify-content: flex-start;
+  align-self: flex-start;
 }
 
-.kp-home .kp-hero-refresh .kp-eyebrow { color: #218f8a; font-size: 10px; font-weight: 750; letter-spacing: 0.12em; line-height: 1.6; }
+.kp-home .kp-hero-refresh .kp-eyebrow {
+  color: #0A8A80;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.6;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
 
 .kp-home .kp-hero-refresh h1 {
-  margin: 20px 0 24px;
+  margin: 16px 0 20px;
   color: #10223c;
-  font-size: clamp(36px, 3.65vw, 57px);
-  font-weight: 750;
-  line-height: 1.09;
-  letter-spacing: -0.055em;
+  font-family: 'Fredoka', system-ui, sans-serif;
+  font-size: clamp(38px, 4vw, 50px); 
+  font-weight: 700;
+  line-height: 1.08;
+
+  font-feature-settings: 'ss01' on, 'cv01' on;
+  white-space: normal;
+  max-width: 100%;
 }
 
 .kp-home .kp-hero-refresh h1 > span { color: #119c92; }
 
 .kp-home .kp-hero-refresh .kp-hero-description {
-  max-width: 425px;
-  color: #526578;
-  font-size: 16px;
+  max-width: 525px;
+  color: #011522;
+  font-size: 17.5px;
   line-height: 1.7;
+  font-weight: 450;
 }
 
 .kp-home .kp-hero-refresh .kp-actions { gap: 12px; margin-top: 27px; }
@@ -483,12 +463,14 @@ const styles = `
 .kp-home .kp-hero-refresh .kp-hero-image {
   display: block;
   width: 100%;
-  max-width: none;
-  height: 100%;
+  max-width: 100%;
+  height: auto;
   min-height: 480px;
+  max-height: 620px;
   object-fit: contain;
-  object-position: right center;
-  align-self: stretch;
+  object-position: center right;
+  align-self: center;
+  border-radius: 16px;
 }
 
 /* ============ TRUST STRIP (stats + school logos) ============ */
@@ -504,6 +486,9 @@ const styles = `
   display: grid;
   grid-template-columns: 1.2fr 1.15fr 1.15fr .85fr 1fr .8fr .8fr;
   align-items: center;
+  /* Match hero width */
+  width: min(1280px, calc(100% - 80px));
+  margin-inline: auto;
 }
 
 .kp-home .kp-connected-trust-inner > * {
@@ -658,14 +643,18 @@ const styles = `
   .kp-home .kp-nav { gap: 16px; }
   .kp-home .kp-nav > a:not(.kp-button) { font-size: 11px; }
 
-  .kp-home .kp-hero.kp-hero-refresh { padding: 48px 0; }
+  .kp-home .kp-header-inner { width: min(1200px, calc(100% - 48px)); }
+
+  .kp-home .kp-hero.kp-hero-refresh { padding: 32px 0 24px; }
   .kp-home .kp-hero-refresh .kp-hero-grid {
     width: min(1200px, calc(100% - 48px));
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
     gap: 20px;
   }
-  .kp-home .kp-hero-refresh h1 { font-size: clamp(34px, 4vw, 44px); }
+  .kp-home .kp-hero-refresh h1 { font-size: clamp(30px, 3.6vw, 38px); }
   .kp-home .kp-hero-refresh .kp-hero-description { font-size: 15px; }
+
+  .kp-home .kp-connected-trust-inner { width: min(1200px, calc(100% - 48px)); }
 
   .kp-home .kp-connected-stat { gap: 10px; padding-inline: 10px; }
   .kp-home .kp-connected-stat > svg { width: 28px; height: 28px; }
@@ -682,7 +671,7 @@ const styles = `
 }
 
 @media (max-width: 850px) {
-  .kp-home .kp-header-inner { min-height: 74px; }
+  .kp-home .kp-header-inner { min-height: 74px; width: calc(100% - 48px); }
   .kp-home .kp-menu-toggle { display: flex; }
   .kp-home .kp-nav {
     display: none;
@@ -698,12 +687,13 @@ const styles = `
   .kp-home .kp-nav-open { display: flex; flex-direction: column; align-items: stretch; }
   .kp-home .kp-nav > a:not(.kp-button) { padding: 10px 0; font-size: 14px; }
 
-  .kp-home .kp-hero.kp-hero-refresh { padding: 48px 0 30px; }
+  .kp-home .kp-hero.kp-hero-refresh { padding: 28px 0 20px; }
   .kp-home .kp-hero-refresh .kp-hero-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .kp-home .kp-hero-refresh .kp-hero-copy { max-width: 620px; padding: 0; }
-  .kp-home .kp-hero-refresh h1 { font-size: clamp(39px, 6.6vw, 56px); }
+  .kp-home .kp-hero-refresh h1 { font-size: clamp(34px, 5.5vw, 46px); }
   .kp-home .kp-hero-refresh .kp-hero-description { max-width: 470px; font-size: 16px; }
-  .kp-home .kp-hero-refresh .kp-hero-artwork { max-width: 720px; margin-inline: auto; }
+  .kp-home .kp-hero-refresh .kp-hero-artwork { max-width: 780px; margin-inline: auto; }
+  .kp-home .kp-hero-refresh .kp-hero-image { min-height: 380px; max-height: 520px; }
 
   .kp-home .kp-connected-trust-inner {
     grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -724,7 +714,9 @@ const styles = `
 
 @media (max-width: 600px) {
   .kp-home .kp-container { width: calc(100% - 36px); }
-  .kp-home .kp-hero.kp-hero-refresh { padding: 38px 0 24px; }
+  .kp-home .kp-header-inner { width: calc(100% - 36px); }
+
+  .kp-home .kp-hero.kp-hero-refresh { padding: 24px 0 16px; }
   .kp-home .kp-hero-refresh .kp-hero-grid {
     width: min(1200px, calc(100% - 36px));
     gap: 24px;
@@ -737,6 +729,7 @@ const styles = `
   .kp-home .kp-hero-refresh .kp-hero-audience { font-size: 10px; margin-top: 15px; }
 
   .kp-home .kp-connected-trust { padding-top: 23px; }
+  .kp-home .kp-connected-trust-inner { width: calc(100% - 36px); }
   .kp-home .kp-connected-stat { gap: 7px; padding-inline: 5px; }
   .kp-home .kp-connected-stat > svg { width: 24px; height: 24px; }
   .kp-home .kp-connected-stat strong { font-size: 17px; }

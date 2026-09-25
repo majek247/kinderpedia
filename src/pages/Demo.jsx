@@ -8,6 +8,11 @@ export default function Demo(){
   const total=steps.length+1
   const ok=i<steps.length?!!a[steps[i][1]]:/\S+@\S+\.\S+/.test(email)
   return(<section className="mx-auto max-w-2xl px-5 py-16">
+    <div className="mb-4 flex items-center justify-center gap-2 text-xs font-medium uppercase tracking-wider text-ink/50">
+      <span className="inline-block h-1.5 w-1.5 rounded-full bg-sun" />
+      Design preview · No data is collected or submitted
+      <span className="inline-block h-1.5 w-1.5 rounded-full bg-sun" />
+    </div>
     <div className="mb-8 h-4 overflow-hidden rounded-full bg-slate-200"><div className="h-4 rounded-full bg-brand transition-all" style={{width:`${(sent?total:i)/total*100}%`}}/></div>
     {sent?(<div className="card text-center"><div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-brand text-white"><Check size={32}/></div><h1 className="mt-4 text-4xl font-bold">You're on the list.</h1><p className="mt-2 text-ink/70">We'll email {email} within one working day to book your 40-minute demo.</p></div>)
     :(<div className="card"><h1 className="text-3xl font-bold md:text-4xl">{i<steps.length?steps[i][0]:'Where should we send your demo invite?'}</h1>
