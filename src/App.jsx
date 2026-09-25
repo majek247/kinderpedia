@@ -8,7 +8,6 @@ import {
 import { useEffect, useState } from 'react'
 import {
   ArrowRight,
-  ChevronDown,
   Menu,
   X,
 } from 'lucide-react'
@@ -18,7 +17,7 @@ import Journeys from './pages/Journeys'
 import Demo from './pages/Demo'
 
 const navLink =
-  'relative inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[13px] font-semibold text-[#17324d] transition hover:bg-[#eaf8f5] hover:text-[#078f88]'
+  'relative inline-flex items-center rounded-full px-3 py-2 text-[13px] font-semibold text-[#17324d] transition hover:bg-[#eaf8f5] hover:text-[#078f88]'
 
 function Logo() {
   return (
@@ -41,224 +40,84 @@ function Logo() {
   )
 }
 
-function Dropdown({ label, children, openMenu, setOpenMenu }) {
-  const isOpen = openMenu === label
+const SECTIONS = [
+  { id: 'kp-platform', label: 'Platform' },
+  { id: 'kp-community', label: 'Who We Serve' },
+  { id: 'kp-stories', label: 'Customers' },
+  { id: 'kp-faq-refresh', label: 'FAQs' },
+  { id: 'kp-final-cta', label: 'Contact' },
+]
 
-  return (
-    <div
-      className="relative"
-      onMouseEnter={() => setOpenMenu(label)}
-      onMouseLeave={() => setOpenMenu(null)}
-    >
-      <button
-        type="button"
-        className={`${navLink} ${isOpen ? 'bg-[#eaf8f5] text-[#078f88]' : ''}`}
-        aria-expanded={isOpen}
-        onClick={() => setOpenMenu(isOpen ? null : label)}
-      >
-        {label}
-        <ChevronDown
-          size={14}
-          className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}
-        />
-      </button>
+function smoothScrollTo(id) {
+  const el = document.getElementById(id)
 
-      {isOpen && (
-        <div className="absolute left-1/2 top-full z-50 w-[250px] -translate-x-1/2 pt-3">
-          <div className="rounded-2xl border border-[#dcece9] bg-white p-2 shadow-[0_18px_45px_rgba(22,72,78,0.14)]">
-            {children}
-          </div>
-        </div>
-      )}
-    </div>
-  )
+  if (!el) return
+
+  const header = document.querySelector('[data-site-header]')
+  const offset = header ? header.offsetHeight : 0
+  const top = el.getBoundingClientRect().top + window.scrollY - offset - 12
+
+  window.scrollTo({ top, behavior: 'smooth' })
 }
 
-function DropdownLink({ to, title, description, onClick }) {
-  return (
-    <Link
-      to={to}
-      onClick={onClick}
-      className="group flex items-start gap-3 rounded-xl px-3 py-3 transition hover:bg-[#eefaf7]"
-    >
-      <span className="mt-1 grid h-2 w-2 shrink-0 rounded-full bg-[#f0448c] transition group-hover:scale-125" />
+function DesktopNavigation() {
+  const location = useLocation()
 
-      <span>
-        <strong className="block text-[13px] font-bold text-[#17324d]">
-          {title}
-        </strong>
+  const handleClick = (event, id) => {
+    // Only intercept when we're already on the homepage
+    if (location.pathname === '/') {
+      event.preventDefault()
+      smoothScrollTo(id)
+      // Update the hash without a jump
+      window.history.replaceState(null, '', `#${id}`)
+    }
+    // Otherwise let React Router navigate to /#id
+  }
 
-        {description && (
-          <small className="mt-1 block text-[11px] leading-4 text-[#728796]">
-            {description}
-          </small>
-        )}
-      </span>
-    </Link>
-  )
-}
-
-function DesktopNavigation({ openMenu, setOpenMenu }) {
   return (
     <nav className="hidden items-center gap-1 lg:flex" aria-label="Main navigation">
-      <Dropdown
-        label="Platform"
-        openMenu={openMenu}
-        setOpenMenu={setOpenMenu}
-      >
-        <DropdownLink
-          to="/#kp-platform"
-          title="Platform overview"
-          description="One connected school day"
-          onClick={() => setOpenMenu(null)}
-        />
-
-        <DropdownLink
-          to="/#kp-platform"
-          title="All modules"
-          description="Explore Kinderpedia features"
-          onClick={() => setOpenMenu(null)}
-        />
-
-        <DropdownLink
-          to="/#kp-community"
-          title="For your people"
-          description="Leaders, teachers and families"
-          onClick={() => setOpenMenu(null)}
-        />
-
-        <DropdownLink
-          to="/#kp-stories"
-          title="Customer stories"
-          description="See how schools use Kinderpedia"
-          onClick={() => setOpenMenu(null)}
-        />
-      </Dropdown>
-
-      <Dropdown
-        label="Solutions"
-        openMenu={openMenu}
-        setOpenMenu={setOpenMenu}
-      >
-        <DropdownLink
-          to="/#kp-community"
-          title="For school leaders"
-          description="A clearer view across your school"
-          onClick={() => setOpenMenu(null)}
-        />
-
-        <DropdownLink
-          to="/#kp-community"
-          title="For teachers"
-          description="More room to teach"
-          onClick={() => setOpenMenu(null)}
-        />
-
-        <DropdownLink
-          to="/#kp-community"
-          title="For families"
-          description="Closer to every school day"
-          onClick={() => setOpenMenu(null)}
-        />
-
-        <DropdownLink
-          to="/#kp-platform"
-          title="For education groups"
-          description="Manage multiple campuses"
-          onClick={() => setOpenMenu(null)}
-        />
-      </Dropdown>
-
-      <NavLink to="/#kp-stories" className={navLink}>
-        Customers
-      </NavLink>
-
-      <Dropdown
-        label="Resources"
-        openMenu={openMenu}
-        setOpenMenu={setOpenMenu}
-      >
-        <DropdownLink
-          to="/#kp-faq-refresh"
-          title="FAQs"
-          description="Answers for your school"
-          onClick={() => setOpenMenu(null)}
-        />
-
-        <DropdownLink
-          to="/#kp-start-path"
-          title="Getting started"
-          description="From demo to first school day"
-          onClick={() => setOpenMenu(null)}
-        />
-
-        <DropdownLink
-          to="/#kp-privacy-strip"
-          title="Security and privacy"
-          description="Built into everyday school life"
-          onClick={() => setOpenMenu(null)}
-        />
-
-        <DropdownLink
-          to="/#kp-stories"
-          title="School stories"
-          description="Real schools, real change"
-          onClick={() => setOpenMenu(null)}
-        />
-      </Dropdown>
-
-      <NavLink to="/pricing" className={navLink}>
-        Pricing
-      </NavLink>
+      {SECTIONS.map(({ id, label }) => (
+        <Link
+          key={id}
+          to={`/#${id}`}
+          onClick={event => handleClick(event, id)}
+          className={navLink}
+        >
+          {label}
+        </Link>
+      ))}
     </nav>
   )
 }
 
 function MobileNavigation({ open, setOpen }) {
+  const location = useLocation()
+
   if (!open) return null
+
+  const handleClick = (event, id) => {
+    setOpen(false)
+
+    if (location.pathname === '/') {
+      event.preventDefault()
+      smoothScrollTo(id)
+      window.history.replaceState(null, '', `#${id}`)
+    }
+  }
 
   return (
     <div className="border-t border-[#e4efed] bg-white px-5 pb-5 pt-3 lg:hidden">
       <nav className="mx-auto flex max-w-6xl flex-col" aria-label="Mobile navigation">
-        <Link
-          to="/#kp-platform"
-          onClick={() => setOpen(false)}
-          className="border-b border-[#edf2f2] px-1 py-3 text-sm font-semibold text-[#17324d]"
-        >
-          Platform
-        </Link>
-
-        <Link
-          to="/#kp-community"
-          onClick={() => setOpen(false)}
-          className="border-b border-[#edf2f2] px-1 py-3 text-sm font-semibold text-[#17324d]"
-        >
-          Solutions
-        </Link>
-
-        <Link
-          to="/#kp-stories"
-          onClick={() => setOpen(false)}
-          className="border-b border-[#edf2f2] px-1 py-3 text-sm font-semibold text-[#17324d]"
-        >
-          Customers
-        </Link>
-
-        <Link
-          to="/#kp-faq-refresh"
-          onClick={() => setOpen(false)}
-          className="border-b border-[#edf2f2] px-1 py-3 text-sm font-semibold text-[#17324d]"
-        >
-          Resources
-        </Link>
-
-        <Link
-          to="/pricing"
-          onClick={() => setOpen(false)}
-          className="border-b border-[#edf2f2] px-1 py-3 text-sm font-semibold text-[#17324d]"
-        >
-          Pricing
-        </Link>
+        {SECTIONS.map(({ id, label }) => (
+          <Link
+            key={id}
+            to={`/#${id}`}
+            onClick={event => handleClick(event, id)}
+            className="border-b border-[#edf2f2] px-1 py-3 text-sm font-semibold text-[#17324d]"
+          >
+            {label}
+          </Link>
+        ))}
 
         <a
           href="https://auth.kinderpedia.co"
@@ -281,38 +140,31 @@ function MobileNavigation({ open, setOpen }) {
 }
 
 function Header() {
-  const [openMenu, setOpenMenu] = useState(null)
   const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
 
   useEffect(() => {
-    setOpenMenu(null)
     setMobileOpen(false)
   }, [location.pathname, location.hash])
 
+  // When the user lands on "/#kp-stories", scroll smoothly after mount
   useEffect(() => {
-    const closeMenus = event => {
-      if (!event.target.closest('[data-site-header]')) {
-        setOpenMenu(null)
-      }
+    if (location.pathname === '/' && location.hash) {
+      const id = location.hash.replace('#', '')
+      const timeout = window.setTimeout(() => smoothScrollTo(id), 80)
+      return () => window.clearTimeout(timeout)
     }
-
-    document.addEventListener('click', closeMenus)
-    return () => document.removeEventListener('click', closeMenus)
-  }, [])
+  }, [location.pathname, location.hash])
 
   return (
     <header
       data-site-header
       className="sticky top-0 z-50 border-b border-[#dcebe8] bg-[#f8fdfc]/95 backdrop-blur-xl"
     >
-      <div className="mx-auto flex min-h-[72px] max-w-[1280px] items-center justify-between gap-6 px-5 sm:px-8 xl:px-10">
+      <div className="mx-auto flex min-h-[72px] w-full max-w-[1280px] items-center justify-between gap-6 px-5 sm:px-8 lg:px-10">
         <Logo />
 
-        <DesktopNavigation
-          openMenu={openMenu}
-          setOpenMenu={setOpenMenu}
-        />
+        <DesktopNavigation />
 
         <div className="hidden items-center gap-5 lg:flex">
           <a
@@ -354,10 +206,13 @@ export default function App() {
   const { pathname } = useLocation()
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'instant',
-    })
+    // On route changes to non-home pages, jump to top
+    if (pathname !== '/') {
+      window.scrollTo({
+        top: 0,
+        behavior: 'instant',
+      })
+    }
   }, [pathname])
 
   return (

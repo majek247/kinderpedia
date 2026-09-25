@@ -990,7 +990,7 @@ export default function ConnectedPlatform({
   ======================================================= */
 
   return (
-    <section className="kp-connected-platform">
+    <section className="kp-connected-platform" id="kp-platform">
 
       <style>
         {styles}

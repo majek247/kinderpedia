@@ -63,6 +63,7 @@ function FAQs() {
 
   return (
     <section
+      id="kp-faq-refresh"
       className="kp-faq-refresh"
       aria-labelledby="kp-faq-refresh-title"
     >
@@ -104,7 +105,7 @@ function FAQs() {
 
 function FinalCTA({ demoTo }) {
   return (
-    <section className="kp-final-refresh-wrap">
+    <section id="kp-final-cta" className="kp-final-refresh-wrap">
       <div className="kp-faq-container">
         <div className="kp-final-refresh">
           <div className="kp-final-refresh-copy">
@@ -180,6 +181,7 @@ const styles = `
   padding: 96px 0 96px;
   background: #fff;
   color: #0B2545;
+  scroll-margin-top: 96px;
 }
 
 .kp-faq-refresh-grid {
@@ -275,6 +277,7 @@ const styles = `
 .kp-final-refresh-wrap {
   padding: 0 0 96px;
   background: #fff;
+  scroll-margin-top: 96px;
 }
 
 .kp-final-refresh {

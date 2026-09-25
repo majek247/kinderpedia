@@ -86,7 +86,7 @@ export default function CaseStudy({ classroomImage = DEFAULT_IMAGE, storyUrl = S
   const [failedImage, setFailedImage] = useState(null)
 
   return (
-    <section className="kp-case-section" aria-labelledby={headingId}>
+    <section className="kp-case-section" id="kp-stories" aria-labelledby={headingId}>
       <style>{styles}</style>
       <div className="kp-case-container">
 
